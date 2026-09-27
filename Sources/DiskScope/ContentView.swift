@@ -28,9 +28,7 @@ struct ContentView: View {
             HStack(spacing: 10) {
                 Image(systemName: "square.stack.3d.up.fill").font(.system(size: 24)).foregroundStyle(Theme.accent)
                 Text("DiskScope").font(.system(size: 22, weight: .semibold, design: .rounded))
-            }.padding(.top, 45).padding(.bottom, 9)
-            Text("ストレージを、見渡す。").font(.system(size: 11)).foregroundStyle(Theme.muted).padding(.bottom, 34)
-            Text("ワークスペース").font(.system(size: 10, weight: .medium)).foregroundStyle(Theme.muted).padding(.bottom, 12)
+            }.padding(.top, 45).padding(.bottom, 30)
             Button { model.navigate(0) } label: {
                 HStack(spacing: 10) {
                     Image(systemName: "square.grid.2x2.fill")
@@ -67,10 +65,6 @@ struct ContentView: View {
                         .font(.system(size: 10, design: .monospaced)).foregroundStyle(Theme.muted)
                 }.padding(13).background(Theme.panel, in: RoundedRectangle(cornerRadius: 9)).padding(.horizontal, -5).padding(.bottom, 22)
             }
-            HStack(spacing: 6) {
-                Circle().fill(Theme.accent).frame(width: 5, height: 5)
-                Text("ローカルで解析 · 読み取り専用").font(.system(size: 9))
-            }.foregroundStyle(Theme.muted).padding(.bottom, 20)
         }
         .padding(.horizontal, 22).frame(maxHeight: .infinity).background(Theme.sidebar)
     }
@@ -79,8 +73,10 @@ struct ContentView: View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("ストレージ概要").font(.system(size: 20, weight: .semibold))
-                Text(model.rootURL?.lastPathComponent.isEmpty == false ? model.rootURL!.lastPathComponent : "フォルダやSSDの容量を、ひと目で。")
-                    .font(.system(size: 11)).foregroundStyle(Theme.muted).lineLimit(1)
+                if let root = model.rootURL {
+                    Text(root.lastPathComponent.isEmpty ? "/" : root.lastPathComponent)
+                        .font(.system(size: 11)).foregroundStyle(Theme.muted).lineLimit(1)
+                }
             }
             Spacer()
             if model.snapshot != nil {
@@ -97,7 +93,7 @@ struct ContentView: View {
             HStack(spacing: 14) {
                 statCard("解析した使用量", value: ByteText.format(snapshot.nodes[0].bytes(model.metric)), detail: model.metric.rawValue, icon: "externaldrive", accent: true)
                 statCard("ファイル", value: snapshot.payload.fileCount.formatted(), detail: "\(snapshot.payload.directoryCount.formatted()) フォルダを走査", icon: "doc.on.doc", accent: false)
-                statCard("解析時間", value: String(format: "%.2f 秒", snapshot.payload.elapsed), detail: "Rust · 最大8スレッドで走査", icon: "bolt", accent: false)
+                statCard("解析時間", value: String(format: "%.2f 秒", snapshot.payload.elapsed), detail: "走査・集計", icon: "bolt", accent: false)
             }
             if snapshot.payload.issueCount > 0 {
                 HStack {
@@ -208,8 +204,8 @@ struct ContentView: View {
                     .buttonStyle(QuietButtonStyle())
             } else {
                 Image(systemName: "cursorarrow.rays").font(.system(size: 28)).foregroundStyle(Theme.muted).padding(.top, 24)
-                Text("気になる領域を\nクリック。").font(.system(size: 19, weight: .medium)).lineSpacing(5)
-                Text("面積が大きいほど、多くの容量を使っています。\n\nフォルダをダブルクリックすると、中身を詳しく確認できます。")
+                Text("項目を選択").font(.system(size: 19, weight: .medium))
+                Text("クリックで詳細を表示\nダブルクリックでフォルダを開く")
                     .font(.system(size: 11)).foregroundStyle(Theme.muted).lineSpacing(5).fixedSize(horizontal: false, vertical: true)
                 Spacer()
                 Text("小さな項目は「その他」にまとめて表示する場合があります。全項目は一覧で検索できます。")
@@ -237,7 +233,7 @@ struct ContentView: View {
     private var fileList: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("大きい項目から確認").font(.system(size: 12, weight: .semibold))
+                Text("項目一覧（容量順）").font(.system(size: 12, weight: .semibold))
                 Text("\(model.currentSelection.count.formatted()) 項目").font(.system(size: 10)).foregroundStyle(Theme.muted)
                 Spacer()
                 Image(systemName: "magnifyingglass").foregroundStyle(Theme.muted)
@@ -295,29 +291,12 @@ struct ContentView: View {
     private var welcome: some View {
         VStack(spacing: 20) {
             Spacer()
-            HStack(spacing: 5) {
-                RoundedRectangle(cornerRadius: 9).fill(Theme.color(.folder)).frame(width: 114, height: 148)
-                    .overlay(Image(systemName: "internaldrive").font(.system(size: 35)).foregroundStyle(Theme.accent))
-                VStack(spacing: 5) {
-                    RoundedRectangle(cornerRadius: 8).fill(Theme.color(.video)).frame(width: 92, height: 82)
-                    HStack(spacing: 5) {
-                        RoundedRectangle(cornerRadius: 7).fill(Theme.color(.image)).frame(width: 49)
-                        RoundedRectangle(cornerRadius: 7).fill(Theme.color(.archive)).frame(width: 38)
-                    }.frame(height: 61)
-                }
-            }.rotationEffect(.degrees(-4)).padding(.bottom, 20)
-            Text("容量の使い道が、見えてくる。").font(.system(size: 28, weight: .medium))
-            Text("フォルダやSSDを選ぶと、ファイルの大きさを面積で表示します。\n大きな領域からたどって、ストレージの中身を確認しましょう。")
-                .font(.system(size: 13)).foregroundStyle(Theme.muted).multilineTextAlignment(.center).lineSpacing(7)
+            Image(systemName: "folder").font(.system(size: 40)).foregroundStyle(Theme.muted)
+            Text("解析対象が未選択です").font(.system(size: 18, weight: .medium))
             Button(action: model.chooseFolder) { Label("フォルダ・SSDを選択", systemImage: "folder") }.buttonStyle(PrimaryButtonStyle()).padding(.top, 7)
             if let error = model.error { Text(error).font(.system(size: 12)).foregroundStyle(.orange).textSelection(.enabled).padding().frame(maxWidth: 560) }
             if let notice = model.notice { Text(notice).font(.system(size: 12)).foregroundStyle(Theme.muted) }
             Spacer()
-            HStack(spacing: 30) {
-                Label("Swift + Rust", systemImage: "bolt")
-                Label("ファイルの内容は読み込まない", systemImage: "doc.text.magnifyingglass")
-                Label("データ送信なし", systemImage: "lock.shield")
-            }.font(.system(size: 10)).foregroundStyle(Theme.muted).padding(.bottom, 35)
         }.frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
@@ -325,15 +304,13 @@ struct ContentView: View {
         VStack(spacing: 22) {
             Spacer()
             ProgressView().controlSize(.large).tint(Theme.accent)
-            Text(model.preparing ? "容量の地図を準備しています" : "ストレージを調べています").font(.system(size: 23, weight: .medium))
+            Text(model.preparing ? "表示を準備中" : "解析中").font(.system(size: 23, weight: .medium))
             Text(model.rootURL?.lastPathComponent ?? "").font(.system(size: 12)).foregroundStyle(Theme.muted)
             HStack(spacing: 40) {
                 scanStat("ファイル", (model.progress?.files ?? 0).formatted())
                 scanStat("フォルダ", (model.progress?.directories ?? 0).formatted())
                 scanStat("確認した使用量", ByteText.format(model.progress?.allocated ?? 0))
             }.padding(.vertical, 18)
-            Text("件数が未確定のため、進捗は確認済みの件数で表示します。")
-                .font(.system(size: 11)).foregroundStyle(Theme.muted)
             Button("キャンセル") { model.cancel() }.buttonStyle(QuietButtonStyle())
             Spacer()
         }.frame(maxWidth: .infinity, maxHeight: .infinity)

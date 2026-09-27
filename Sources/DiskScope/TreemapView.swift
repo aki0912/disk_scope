@@ -19,7 +19,13 @@ struct TreemapView: View {
     @State private var pointer = CGPoint.zero
 
     var body: some View {
-        GeometryReader { geometry in
+        // Read render inputs while evaluating body, so changes invalidate Canvas
+        // even when no hover event occurs. The renderer captures these values.
+        let tiles = self.tiles
+        let hovered = self.hovered
+        let selectedID = model.selectedID
+        let totalBytes = model.current?.bytes(model.metric) ?? 0
+        return GeometryReader { geometry in
             Canvas { context, _ in
                 for (index, tile) in tiles.enumerated() {
                     let rect = tile.rect.insetBy(dx: 2, dy: 2)
@@ -28,7 +34,7 @@ struct TreemapView: View {
                     let color = Theme.color(tile.category)
                     context.fill(shape, with: .color(color.opacity(tile.hasChildren ? 0.42 : (tile.depth == 0 ? 0.88 : 0.80))))
                     if hovered == index { context.fill(shape, with: .color(.white.opacity(0.12))) }
-                    if tile.nodeID != nil && tile.nodeID == model.selectedID {
+                    if tile.nodeID != nil && tile.nodeID == selectedID {
                         context.stroke(shape, with: .color(Theme.accent), lineWidth: 2)
                     } else {
                         context.stroke(shape, with: .color(.white.opacity(0.08)), lineWidth: 0.5)
@@ -42,8 +48,8 @@ struct TreemapView: View {
                     clipped.draw(Text(title).font(.system(size: fontSize, weight: .medium)).foregroundColor(.white.opacity(0.95)), at: CGPoint(x: rect.minX + 10, y: rect.minY + 9), anchor: .topLeading)
                     if !tile.hasChildren && rect.height > 53 {
                         clipped.draw(Text(ByteText.format(tile.bytes)).font(.system(size: rect.width > 180 && rect.height > 100 ? 22 : 12, weight: .semibold, design: .rounded)).foregroundColor(.white), at: CGPoint(x: rect.minX + 10, y: rect.minY + 29), anchor: .topLeading)
-                        if rect.height > 92, let total = model.current?.bytes(model.metric) {
-                            clipped.draw(Text(ByteText.percent(tile.bytes, of: total)).font(.system(size: 10, design: .monospaced)).foregroundColor(.white.opacity(0.60)), at: CGPoint(x: rect.minX + 10, y: rect.maxY - 13), anchor: .bottomLeading)
+                        if rect.height > 92 {
+                            clipped.draw(Text(ByteText.percent(tile.bytes, of: totalBytes)).font(.system(size: 10, design: .monospaced)).foregroundColor(.white.opacity(0.60)), at: CGPoint(x: rect.minX + 10, y: rect.maxY - 13), anchor: .bottomLeading)
                         }
                     }
                 }
@@ -53,7 +59,7 @@ struct TreemapView: View {
                     let tile = tiles[hovered]
                     VStack(alignment: .leading, spacing: 3) {
                         Text(tile.title).font(.system(size: 11, weight: .semibold)).lineLimit(2)
-                        Text("\(ByteText.format(tile.bytes)) · \(ByteText.percent(tile.bytes, of: model.current?.bytes(model.metric) ?? 0))")
+                        Text("\(ByteText.format(tile.bytes)) · \(ByteText.percent(tile.bytes, of: totalBytes))")
                             .font(.system(size: 10, design: .monospaced)).foregroundStyle(Theme.muted)
                     }
                     .padding(10).frame(maxWidth: 220, alignment: .leading)
@@ -68,8 +74,8 @@ struct TreemapView: View {
                 switch phase {
                 case .active(let point):
                     pointer = point
-                    hovered = tiles.indices.reversed().first { tiles[$0].rect.contains(point) }
-                case .ended: hovered = nil
+                    self.hovered = tiles.indices.reversed().first { tiles[$0].rect.contains(point) }
+                case .ended: self.hovered = nil
                 }
             }
             .onTapGesture(count: 2) {
@@ -83,8 +89,8 @@ struct TreemapView: View {
                 model.selectedID = tiles[hovered].nodeID ?? tiles[hovered].parentID
             }
             .task(id: "\(geometry.size)-\(model.currentID)-\(model.metric)-\(model.snapshot?.nodes.count ?? 0)") {
-                hovered = nil
-                tiles = makeTiles(in: CGRect(origin: .zero, size: geometry.size))
+                self.hovered = nil
+                self.tiles = makeTiles(in: CGRect(origin: .zero, size: geometry.size))
             }
             .accessibilityLabel("容量ツリーマップ。各項目の詳細とフォルダ移動は下の一覧から操作できます。")
         }

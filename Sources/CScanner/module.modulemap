@@ -1,0 +1,4 @@
+module CScanner {
+    header "include/scanner.h"
+    export *
+}

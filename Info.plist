@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key><string>DiskScope</string>
+    <key>CFBundleDisplayName</key><string>DiskScope</string>
+    <key>CFBundleIdentifier</key><string>local.diskscope.app</string>
+    <key>CFBundleExecutable</key><string>DiskScope</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleShortVersionString</key><string>0.1.0</string>
+    <key>CFBundleVersion</key><string>1</string>
+    <key>LSMinimumSystemVersion</key><string>14.0</string>
+    <key>NSHighResolutionCapable</key><true/>
+    <key>NSPrincipalClass</key><string>NSApplication</string>
+    <key>NSDocumentsFolderUsageDescription</key><string>選択したフォルダのファイル容量を集計します。</string>
+    <key>NSDownloadsFolderUsageDescription</key><string>選択したフォルダのファイル容量を集計します。</string>
+    <key>NSDesktopFolderUsageDescription</key><string>選択したフォルダのファイル容量を集計します。</string>
+    <key>NSRemovableVolumesUsageDescription</key><string>選択したSSDや外部ストレージのファイル容量を集計します。</string>
+    <key>NSNetworkVolumesUsageDescription</key><string>選択したボリュームのファイル容量を集計します。</string>
+</dict>
+</plist>

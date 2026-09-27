@@ -41,7 +41,7 @@ final class CoreTests: XCTestCase {
         {"id":2,"name":"日本語.txt","parent":1,"kind":"file","logical":7,"allocated":4096,"modified":0,"duplicate":false,"excluded":false,"unreadable":false}]}
         """.utf8)
         let snapshot = try ScanSnapshot(data: data)
-        XCTAssertEqual(snapshot.children, [[1], [2], []])
+        XCTAssertEqual(snapshot.children.map(Array.init), [[1], [2], []])
         XCTAssertEqual(snapshot.descendantFiles, [1, 1, 1])
         XCTAssertEqual(snapshot.ancestors(of: 2), [0, 1, 2])
         XCTAssertEqual(snapshot.url(for: 2).lastPathComponent, "日本語.txt")
@@ -92,6 +92,70 @@ final class CoreTests: XCTestCase {
                     XCTAssertGreaterThanOrEqual(selected.nonzeroCount, shown.count)
                 }
             }
+        }
+    }
+
+    func testPackedKindsPreserveWireValuesAndFullWidthMetadata() throws {
+        for (kind, wireName) in [(NodeKind.file, "file"), (.directory, "directory"), (.symlink, "symlink"), (.unknown, "unknown")] {
+            let node = ScanNode(id: 123, name: "日本語-\"test\".txt", parent: 12, kind: kind,
+                                logical: .max, allocated: .max, modified: .min,
+                                duplicate: true, excluded: true, unreadable: true)
+            let data = try JSONEncoder().encode(node)
+            let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+            XCTAssertEqual(json["kind"] as? String, wireName)
+            let decoded = try JSONDecoder().decode(ScanNode.self, from: data)
+            XCTAssertEqual(decoded.kind, kind)
+            XCTAssertEqual(decoded.parent, 12)
+            XCTAssertEqual(decoded.id, 123)
+            XCTAssertEqual(decoded.name, node.name)
+            XCTAssertEqual(decoded.logical, UInt64.max)
+            XCTAssertEqual(decoded.allocated, UInt64.max)
+            XCTAssertEqual(decoded.modified, Int64.min)
+            XCTAssertTrue(decoded.duplicate && decoded.excluded && decoded.unreadable)
+            if kind == .symlink { XCTAssertEqual(decoded.category, .link) }
+        }
+    }
+
+    func testCompactSnapshotMatchesReferenceForMixedAndDeepTrees() throws {
+        for (count, chain) in [(1, false), (2, false), (4096, false), (512, true)] {
+            var parents = [Int?](repeating: nil, count: count)
+            var expected = [[Int]](repeating: [], count: count)
+            var random: UInt64 = 42
+            for id in 1..<count {
+                random = random &* 6364136223846793005 &+ 1
+                let parent = chain ? id - 1 : Int(random % UInt64(id))
+                parents[id] = parent
+                expected[parent].append(id)
+            }
+            let nodes = (0..<count).map { id in
+                ScanNode(id: id, name: "日本語-\(id)", parent: parents[id],
+                         kind: id == 0 || !expected[id].isEmpty || id % 4 == 0 ? .directory : (id % 4 == 1 ? .file : (id % 4 == 2 ? .symlink : .unknown)),
+                         logical: UInt64(id), allocated: UInt64(id) * 4096, modified: 0,
+                         duplicate: id % 7 == 0, excluded: id % 11 == 0, unreadable: id % 13 == 0)
+            }
+            var counts = [Int](repeating: 0, count: count)
+            for id in nodes.indices where !nodes[id].isDirectory {
+                var next: Int? = id
+                while let current = next { counts[current] += 1; next = parents[current] }
+            }
+            let payload = ScanPayload(rootPath: "/fixture", elapsed: 0, fileCount: UInt64(counts[0]),
+                                      directoryCount: UInt64(nodes.filter(\.isDirectory).count), issueCount: 0,
+                                      excludedCount: 0, duplicateCount: 0, nodes: nodes, issues: [])
+            let snapshot = try ScanSnapshot(data: JSONEncoder().encode(payload))
+            XCTAssertEqual(snapshot.children.map(Array.init), expected)
+            XCTAssertEqual(snapshot.descendantFiles, counts)
+            XCTAssertEqual(snapshot.children.count, count)
+            if chain { XCTAssertEqual(snapshot.ancestors(of: count - 1), Array(0..<count)) }
+        }
+    }
+
+    func testInvalidHierarchyIsRejectedBeforeIndexConstruction() throws {
+        for (id, parent) in [(0, Optional(-1)), (0, Optional(0)), (1, nil)] {
+            let node = ScanNode(id: id, name: "invalid", parent: parent, kind: .directory,
+                                logical: 0, allocated: 0, modified: 0, duplicate: false, excluded: false, unreadable: false)
+            let payload = ScanPayload(rootPath: "/fixture", elapsed: 0, fileCount: 0, directoryCount: 1,
+                                      issueCount: 0, excludedCount: 0, duplicateCount: 0, nodes: [node], issues: [])
+            XCTAssertThrowsError(try ScanSnapshot(data: JSONEncoder().encode(payload)))
         }
     }
 

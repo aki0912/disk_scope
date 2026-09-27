@@ -50,10 +50,10 @@ final class SearchProbe: @unchecked Sendable {
         precondition(a.ids == b.ids && a.count == b.count && a.nonzeroCount == b.nonzeroCount && a.bytes == b.bytes)
     }
     static func fixture() throws -> ScanSnapshot {
-        var nodes = [ScanNode(id: 0, name: "root", parent: nil, kind: "directory", logical: 0, allocated: 0, modified: 0, duplicate: false, excluded: false, unreadable: false)]
-        nodes.append(ScanNode(id: 1, name: "nested", parent: 0, kind: "directory", logical: 0, allocated: 0, modified: 0, duplicate: false, excluded: false, unreadable: false))
+        var nodes = [ScanNode(id: 0, name: "root", parent: nil, kind: .directory, logical: 0, allocated: 0, modified: 0, duplicate: false, excluded: false, unreadable: false)]
+        nodes.append(ScanNode(id: 1, name: "nested", parent: 0, kind: .directory, logical: 0, allocated: 0, modified: 0, duplicate: false, excluded: false, unreadable: false))
         for id in 2...50_001 {
-            nodes.append(ScanNode(id: id, name: "日本語-file-\(id).txt", parent: id == 2 ? 1 : 0, kind: "file", logical: UInt64(id % 17), allocated: UInt64(id % 13) * 4096, modified: 0, duplicate: false, excluded: false, unreadable: false))
+            nodes.append(ScanNode(id: id, name: "日本語-file-\(id).txt", parent: id == 2 ? 1 : 0, kind: .file, logical: UInt64(id % 17), allocated: UInt64(id % 13) * 4096, modified: 0, duplicate: false, excluded: false, unreadable: false))
         }
         let payload = ScanPayload(rootPath: "/fixture", elapsed: 0, fileCount: 50_000, directoryCount: 2, issueCount: 0, excludedCount: 0, duplicateCount: 0, nodes: nodes, issues: [])
         return try ScanSnapshot(data: JSONEncoder().encode(payload))

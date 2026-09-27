@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import Darwin
 
 // Instrumentation is inserted into temporary source copies by the benchmark runner.
 // The window ignores mouse input, and no forced display API is used.
@@ -24,6 +25,18 @@ enum PerformanceProbe {
 
 @main
 struct FirstFrameBenchmark {
+    static func residentBytes() -> UInt64 {
+        var info = mach_task_basic_info()
+        var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size / MemoryLayout<integer_t>.size)
+        let status = withUnsafeMutablePointer(to: &info) { pointer in
+            pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) {
+                task_info(mach_task_self_, task_flavor_t(MACH_TASK_BASIC_INFO), $0, &count)
+            }
+        }
+        precondition(status == KERN_SUCCESS)
+        return info.resident_size
+    }
+
     @MainActor static func main() {
         let application = NSApplication.shared
         application.setActivationPolicy(.accessory)
@@ -53,6 +66,10 @@ struct FirstFrameBenchmark {
                     var usage = rusage()
                     getrusage(RUSAGE_SELF, &usage)
                     result["peak_rss_bytes"] = Double(usage.ru_maxrss)
+                    if CommandLine.arguments.contains("--settled") {
+                        try? await Task.sleep(for: .seconds(1))
+                        result["settled_rss_bytes"] = Double(residentBytes())
+                    }
                     let data = try! JSONSerialization.data(withJSONObject: result, options: [.sortedKeys])
                     print(String(decoding: data, as: UTF8.self))
                     model.cancel(showNotice: false)

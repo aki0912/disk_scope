@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--baseline', type=Path, required=True, help='A source checkout of the previous version')
 parser.add_argument('--runs', type=int, default=8)
+parser.add_argument('--settled', action='store_true', help='Also measure resident memory one second after first draw')
 parser.add_argument('--sizes', type=int, nargs='+', default=[1000, 10000, 50000])
 parser.add_argument('--output', type=Path, required=True)
 args = parser.parse_args()
@@ -81,7 +82,7 @@ def compile_version(source, destination):
 
 
 def sample(executable, fixture):
-    output = checked([str(executable), str(fixture)], timeout=45)
+    output = checked([str(executable), str(fixture), *(['--settled'] if args.settled else [])], timeout=45)
     data = json.loads(output.stdout.strip().splitlines()[-1])
     data['json_ms'] = float(re.search(r'BENCH_JSON_MS=([0-9.eE+-]+)', output.stderr).group(1))
     data['detection_and_handoff_ms'] = (data['first_frame_ms'] - data['scan_ms'] - data['json_ms']

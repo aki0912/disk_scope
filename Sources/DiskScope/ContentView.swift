@@ -194,7 +194,7 @@ struct ContentView: View {
                 if node.duplicate { note("ハードリンク：容量は別の項目に計上済み") }
                 if node.excluded { note("別ボリュームまたは特殊ファイルのため集計対象外") }
                 if node.unreadable { note("読み取れない項目を含みます") }
-                if node.kind == "symlink" { note("リンク先は走査していません") }
+                if node.kind == .symlink { note("リンク先は走査していません") }
                 Spacer(minLength: 0)
                 if node.isDirectory {
                     Button { model.navigate(node.id) } label: { Label("このフォルダを表示", systemImage: "arrow.down.right") }

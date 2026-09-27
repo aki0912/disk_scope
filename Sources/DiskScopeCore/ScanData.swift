@@ -5,22 +5,89 @@ public enum SizeMetric: String, CaseIterable, Sendable {
     case logical = "ファイルサイズ"
 }
 
+public enum NodeKind: UInt8, Sendable {
+    case file, directory, symlink, unknown
+
+    fileprivate init?(wireName: String) {
+        switch wireName {
+        case "file": self = .file
+        case "directory": self = .directory
+        case "symlink": self = .symlink
+        case "unknown": self = .unknown
+        default: return nil
+        }
+    }
+
+    fileprivate var wireName: String {
+        switch self {
+        case .file: return "file"
+        case .directory: return "directory"
+        case .symlink: return "symlink"
+        case .unknown: return "unknown"
+        }
+    }
+}
+
 public struct ScanNode: Codable, Identifiable, Sendable {
     public let id: Int
     public let name: String
     public let parent: Int?
-    public let kind: String
-    public let logical: UInt64
-    public let allocated: UInt64
-    public let modified: Int64
+    // Keep small fields together to avoid padding between 64-bit values.
+    public let kind: NodeKind
     public let duplicate: Bool
     public let excluded: Bool
     public let unreadable: Bool
-    public var isDirectory: Bool { kind == "directory" }
+    public let logical: UInt64
+    public let allocated: UInt64
+    public let modified: Int64
+    public var isDirectory: Bool { kind == .directory }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, name, parent, kind, logical, allocated, modified, duplicate, excluded, unreadable
+    }
+
+    init(id: Int, name: String, parent: Int?, kind: NodeKind, logical: UInt64, allocated: UInt64,
+         modified: Int64, duplicate: Bool, excluded: Bool, unreadable: Bool) {
+        self.id = id; self.name = name; self.parent = parent; self.kind = kind
+        self.logical = logical; self.allocated = allocated; self.modified = modified
+        self.duplicate = duplicate; self.excluded = excluded; self.unreadable = unreadable
+    }
+
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decode(Int.self, forKey: .id)
+        name = try values.decode(String.self, forKey: .name)
+        parent = try values.decodeIfPresent(Int.self, forKey: .parent)
+        let kindName = try values.decode(String.self, forKey: .kind)
+        guard let kind = NodeKind(wireName: kindName) else {
+            throw DecodingError.dataCorruptedError(forKey: .kind, in: values, debugDescription: "Unknown node kind")
+        }
+        self.kind = kind
+        logical = try values.decode(UInt64.self, forKey: .logical)
+        allocated = try values.decode(UInt64.self, forKey: .allocated)
+        modified = try values.decode(Int64.self, forKey: .modified)
+        duplicate = try values.decode(Bool.self, forKey: .duplicate)
+        excluded = try values.decode(Bool.self, forKey: .excluded)
+        unreadable = try values.decode(Bool.self, forKey: .unreadable)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var values = encoder.container(keyedBy: CodingKeys.self)
+        try values.encode(id, forKey: .id)
+        try values.encode(name, forKey: .name)
+        try values.encodeIfPresent(parent, forKey: .parent)
+        try values.encode(kind.wireName, forKey: .kind)
+        try values.encode(logical, forKey: .logical)
+        try values.encode(allocated, forKey: .allocated)
+        try values.encode(modified, forKey: .modified)
+        try values.encode(duplicate, forKey: .duplicate)
+        try values.encode(excluded, forKey: .excluded)
+        try values.encode(unreadable, forKey: .unreadable)
+    }
     public func bytes(_ metric: SizeMetric) -> UInt64 { metric == .allocated ? allocated : logical }
     public var category: FileCategory {
         if isDirectory { return .folder }
-        if kind == "symlink" { return .link }
+        if kind == .symlink { return .link }
         switch (name as NSString).pathExtension.lowercased() {
         case "mp4", "mov", "mkv", "avi", "m4v", "webm": return .video
         case "png", "jpg", "jpeg", "heic", "gif", "raw", "tiff", "webp", "svg", "psd": return .image
@@ -66,6 +133,27 @@ public struct ScanPayload: Codable, Sendable {
     public let duplicateCount: Int
     public let nodes: [ScanNode]
     public let issues: [ScanIssue]
+}
+
+extension ScanPayload {
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        rootPath = try values.decode(String.self, forKey: .rootPath)
+        elapsed = try values.decode(Double.self, forKey: .elapsed)
+        fileCount = try values.decode(UInt64.self, forKey: .fileCount)
+        directoryCount = try values.decode(UInt64.self, forKey: .directoryCount)
+        issueCount = try values.decode(Int.self, forKey: .issueCount)
+        excludedCount = try values.decode(Int.self, forKey: .excludedCount)
+        duplicateCount = try values.decode(Int.self, forKey: .duplicateCount)
+        issues = try values.decode([ScanIssue].self, forKey: .issues)
+        var items = try values.nestedUnkeyedContainer(forKey: .nodes)
+        var nodes: [ScanNode] = []
+        // JSONDecoder knows the array length. Allocate once, avoiding geometric
+        // growth and retaining unused capacity in the completed snapshot.
+        if let count = items.count { nodes.reserveCapacity(count) }
+        while !items.isAtEnd { nodes.append(try items.decode(ScanNode.self)) }
+        self.nodes = nodes
+    }
 }
 
 public struct ScanSnapshot: Sendable {
@@ -117,24 +205,27 @@ public struct ScanSnapshot: Sendable {
     /// Check at bounded intervals, including nonmatching items, so superseded searches stop promptly.
     public func largestChildren(of id: Int, metric: SizeMetric, limit: Int, matching query: String,
                                 checkCancellation: () throws -> Void) rethrows -> ChildSelection {
+        let nodes = payload.nodes
+        let useAllocated = metric == .allocated
         let capacity = max(0, limit)
         var heap: [Int] = []
         heap.reserveCapacity(min(capacity, children[id].count))
         var count = 0, nonzeroCount = 0
         var bytes: UInt64 = 0
         func precedes(_ left: Int, _ right: Int) -> Bool {
-            let a = nodes[left], b = nodes[right]
-            if a.bytes(metric) != b.bytes(metric) { return a.bytes(metric) > b.bytes(metric) }
-            let order = a.name.localizedStandardCompare(b.name)
+            let a = useAllocated ? nodes[left].allocated : nodes[left].logical
+            let b = useAllocated ? nodes[right].allocated : nodes[right].logical
+            if a != b { return a > b }
+            let order = nodes[left].name.localizedStandardCompare(nodes[right].name)
             return order == .orderedSame ? left < right : order == .orderedAscending
         }
         for (offset, child) in children[id].enumerated() {
             if offset.isMultiple(of: 256) { try checkCancellation() }
-            let node = nodes[child]
-            if !query.isEmpty && !node.name.localizedCaseInsensitiveContains(query) { continue }
+            if !query.isEmpty && !nodes[child].name.localizedCaseInsensitiveContains(query) { continue }
+            let size = useAllocated ? nodes[child].allocated : nodes[child].logical
             count += 1
-            bytes &+= node.bytes(metric)
-            if node.bytes(metric) > 0 { nonzeroCount += 1 }
+            bytes &+= size
+            if size > 0 { nonzeroCount += 1 }
             guard capacity > 0 else { continue }
             if heap.count < capacity {
                 heap.append(child)

@@ -292,7 +292,7 @@ struct ContentView: View {
         VStack(spacing: 20) {
             Spacer()
             Image(systemName: "folder").font(.system(size: 40)).foregroundStyle(Theme.muted)
-            Text("解析対象が未選択です").font(.system(size: 18, weight: .medium))
+            Text("解析対象を選択してください").font(.system(size: 18, weight: .medium))
             Button(action: model.chooseFolder) { Label("フォルダ・SSDを選択", systemImage: "folder") }.buttonStyle(PrimaryButtonStyle()).padding(.top, 7)
             if let error = model.error { Text(error).font(.system(size: 12)).foregroundStyle(.orange).textSelection(.enabled).padding().frame(maxWidth: 560) }
             if let notice = model.notice { Text(notice).font(.system(size: 12)).foregroundStyle(Theme.muted) }

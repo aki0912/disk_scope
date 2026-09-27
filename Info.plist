@@ -5,6 +5,7 @@
     <key>CFBundleName</key><string>DiskScope</string>
     <key>CFBundleDisplayName</key><string>DiskScope</string>
     <key>CFBundleIdentifier</key><string>local.diskscope.app</string>
+    <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundleExecutable</key><string>DiskScope</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>0.1.0</string>

@@ -37,8 +37,9 @@ final class ScannerModel: ObservableObject {
     @Published var currentID = 0
     @Published var selectedID: Int?
     @Published var metric: SizeMetric = .allocated { didSet { refreshChildren() } }
-    @Published var search = ""
-    @Published var sortedChildren: [Int] = []
+    @Published var search = "" { didSet { refreshFilter() } }
+    @Published var currentSelection = ChildSelection.empty
+    @Published var filteredSelection = ChildSelection.empty
     @Published var volumeTotal: UInt64 = 0
     @Published var volumeAvailable: UInt64 = 0
     @Published var recentRoots: [String] = UserDefaults.standard.stringArray(forKey: "recentRoots") ?? []
@@ -48,11 +49,7 @@ final class ScannerModel: ObservableObject {
 
     var current: ScanNode? { snapshot.map { $0.nodes[currentID] } }
     var selected: ScanNode? { guard let id = selectedID else { return nil }; return snapshot?.nodes[id] }
-    var filteredChildren: [Int] {
-        guard let snapshot else { return [] }
-        if search.isEmpty { return sortedChildren }
-        return sortedChildren.filter { snapshot.nodes[$0].name.localizedCaseInsensitiveContains(search) }
-    }
+    var filteredChildren: [Int] { filteredSelection.ids }
 
     func chooseFolder() {
         chooseFolder(at: rootURL)
@@ -76,7 +73,7 @@ final class ScannerModel: ObservableObject {
     func start(_ url: URL) {
         cancel(showNotice: false)
         rootURL = url
-        snapshot = nil; selectedID = nil; sortedChildren = []; currentID = 0
+        snapshot = nil; selectedID = nil; currentSelection = .empty; filteredSelection = .empty; currentID = 0
         error = nil; notice = nil; progress = nil; search = ""
         volumeTotal = 0; volumeAvailable = 0
         if let volume = try? url.resourceValues(forKeys: [.volumeTotalCapacityKey, .volumeAvailableCapacityKey]) {
@@ -138,7 +135,13 @@ final class ScannerModel: ObservableObject {
     }
 
     func refreshChildren() {
-        sortedChildren = snapshot?.sortedChildren(of: currentID, metric: metric) ?? []
+        currentSelection = snapshot?.largestChildren(of: currentID, metric: metric, limit: 300) ?? .empty
+        refreshFilter()
+    }
+
+    private func refreshFilter() {
+        if search.isEmpty { filteredSelection = currentSelection }
+        else { filteredSelection = snapshot?.largestChildren(of: currentID, metric: metric, limit: 300, matching: search) ?? .empty }
     }
 
     func navigate(_ id: Int) {

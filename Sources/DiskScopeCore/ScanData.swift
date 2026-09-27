@@ -108,13 +108,59 @@ public struct ScanSnapshot: Sendable {
         return url
     }
 
-    public func sortedChildren(of id: Int, metric: SizeMetric) -> [Int] {
-        children[id].sorted {
-            let a = nodes[$0], b = nodes[$1]
+    /// Select only the visible leaders. The heap root is the worst retained item.
+    /// Unshown items still contribute to counts and bytes for the treemap remainder.
+    public func largestChildren(of id: Int, metric: SizeMetric, limit: Int, matching query: String = "") -> ChildSelection {
+        let capacity = max(0, limit)
+        var heap: [Int] = []
+        heap.reserveCapacity(min(capacity, children[id].count))
+        var count = 0, nonzeroCount = 0
+        var bytes: UInt64 = 0
+        func precedes(_ left: Int, _ right: Int) -> Bool {
+            let a = nodes[left], b = nodes[right]
             if a.bytes(metric) != b.bytes(metric) { return a.bytes(metric) > b.bytes(metric) }
-            return a.name.localizedStandardCompare(b.name) == .orderedAscending
+            let order = a.name.localizedStandardCompare(b.name)
+            return order == .orderedSame ? left < right : order == .orderedAscending
         }
+        for child in children[id] {
+            let node = nodes[child]
+            if !query.isEmpty && !node.name.localizedCaseInsensitiveContains(query) { continue }
+            count += 1
+            bytes &+= node.bytes(metric)
+            if node.bytes(metric) > 0 { nonzeroCount += 1 }
+            guard capacity > 0 else { continue }
+            if heap.count < capacity {
+                heap.append(child)
+                var index = heap.count - 1
+                while index > 0 {
+                    let parent = (index - 1) / 2
+                    if !precedes(heap[parent], heap[index]) { break }
+                    heap.swapAt(parent, index)
+                    index = parent
+                }
+            } else if precedes(child, heap[0]) {
+                heap[0] = child
+                var index = 0
+                while index * 2 + 1 < heap.count {
+                    var worst = index * 2 + 1
+                    if worst + 1 < heap.count && precedes(heap[worst], heap[worst + 1]) { worst += 1 }
+                    if !precedes(heap[index], heap[worst]) { break }
+                    heap.swapAt(index, worst)
+                    index = worst
+                }
+            }
+        }
+        return ChildSelection(ids: heap.sorted(by: precedes), count: count, nonzeroCount: nonzeroCount, bytes: bytes)
     }
+
+}
+
+public struct ChildSelection: Sendable {
+    public let ids: [Int]
+    public let count: Int
+    public let nonzeroCount: Int
+    public let bytes: UInt64
+    public static let empty = ChildSelection(ids: [], count: 0, nonzeroCount: 0, bytes: 0)
 }
 
 public enum ByteText {

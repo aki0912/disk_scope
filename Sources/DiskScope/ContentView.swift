@@ -238,7 +238,7 @@ struct ContentView: View {
         VStack(spacing: 0) {
             HStack {
                 Text("大きい項目から確認").font(.system(size: 12, weight: .semibold))
-                Text("\(model.sortedChildren.count.formatted()) 項目").font(.system(size: 10)).foregroundStyle(Theme.muted)
+                Text("\(model.currentSelection.count.formatted()) 項目").font(.system(size: 10)).foregroundStyle(Theme.muted)
                 Spacer()
                 Image(systemName: "magnifyingglass").foregroundStyle(Theme.muted)
                 TextField("この階層を検索", text: $model.search).textFieldStyle(.plain).font(.system(size: 11)).frame(width: 150)
@@ -252,7 +252,7 @@ struct ContentView: View {
                             fileRow(snapshot.nodes[id])
                         }
                         if matches.isEmpty { Text(model.search.isEmpty ? "この階層には項目がありません" : "一致する項目がありません").font(.system(size: 11)).foregroundStyle(Theme.muted).padding(20) }
-                        if matches.count > 300 { Text("上位300件を表示しています。名前で検索すると残りの項目も確認できます。")
+                        if model.filteredSelection.count > 300 { Text("上位300件を表示しています。名前で検索すると残りの項目も確認できます。")
                             .font(.system(size: 10)).foregroundStyle(Theme.muted).padding(10) }
                     }
                 }

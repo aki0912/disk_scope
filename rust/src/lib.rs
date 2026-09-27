@@ -44,6 +44,18 @@ struct Entry {
     metadata: std::io::Result<fs::Metadata>,
 }
 
+const METADATA_BATCH_SIZE: usize = 512;
+
+enum Work {
+    Directory(usize, PathBuf),
+    Metadata(usize, PathBuf, Vec<PathBuf>),
+}
+
+enum Event {
+    Batch(Work),
+    Complete(DirectoryResult),
+}
+
 struct DirectoryResult {
     id: usize,
     path: PathBuf,
@@ -175,14 +187,41 @@ pub unsafe extern "C" fn ds_string_free(value: *mut c_char) {
     }
 }
 
-fn read_directory(id: usize, path: PathBuf, job: &Job) -> DirectoryResult {
+fn read_metadata(id: usize, path: PathBuf, paths: Vec<PathBuf>, job: &Job) -> DirectoryResult {
     let mut result = DirectoryResult {
         id,
         path,
-        entries: vec![],
+        entries: Vec::with_capacity(paths.len()),
         errors: vec![],
     };
-    match fs::read_dir(&result.path) {
+    let mut files = 0;
+    for path in paths {
+        if job.cancelled.load(Ordering::Relaxed) {
+            break;
+        }
+        let metadata = fs::symlink_metadata(&path);
+        if metadata.as_ref().is_ok_and(|m| !m.is_dir()) {
+            files += 1;
+        }
+        result.entries.push(Entry {
+            name: path.file_name().unwrap().to_string_lossy().into_owned(),
+            path,
+            metadata,
+        });
+    }
+    job.files.fetch_add(files, Ordering::Relaxed);
+    result
+}
+
+fn read_directory(
+    id: usize,
+    path: PathBuf,
+    job: &Job,
+    events: &mpsc::SyncSender<Event>,
+) -> DirectoryResult {
+    let mut paths = Vec::with_capacity(METADATA_BATCH_SIZE);
+    let mut errors = vec![];
+    match fs::read_dir(&path) {
         Ok(entries) => {
             for entry in entries {
                 if job.cancelled.load(Ordering::Relaxed) {
@@ -190,23 +229,30 @@ fn read_directory(id: usize, path: PathBuf, job: &Job) -> DirectoryResult {
                 }
                 match entry {
                     Ok(entry) => {
-                        let path = entry.path();
-                        let metadata = fs::symlink_metadata(&path);
-                        if metadata.as_ref().is_ok_and(|m| !m.is_dir()) {
-                            job.files.fetch_add(1, Ordering::Relaxed);
+                        paths.push(entry.path());
+                        // Large directories can use the whole pool; small directories
+                        // stay on this worker to avoid unnecessary queue traffic.
+                        if paths.len() == METADATA_BATCH_SIZE {
+                            let batch = std::mem::replace(
+                                &mut paths,
+                                Vec::with_capacity(METADATA_BATCH_SIZE),
+                            );
+                            if events
+                                .send(Event::Batch(Work::Metadata(id, path.clone(), batch)))
+                                .is_err()
+                            {
+                                break;
+                            }
                         }
-                        result.entries.push(Entry {
-                            name: entry.file_name().to_string_lossy().into_owned(),
-                            path,
-                            metadata,
-                        });
                     }
-                    Err(error) => result.errors.push(error.to_string()),
+                    Err(error) => errors.push(error.to_string()),
                 }
             }
         }
-        Err(error) => result.errors.push(error.to_string()),
+        Err(error) => errors.push(error.to_string()),
     }
+    let mut result = read_metadata(id, path, paths, job);
+    result.errors = errors;
     job.directories.fetch_add(1, Ordering::Relaxed);
     result
 }
@@ -237,9 +283,9 @@ fn scan(root: &Path, job: &Arc<Job>) -> Result<String, String> {
         .map(|n| n.get())
         .unwrap_or(4)
         .clamp(1, 8);
-    let (task_tx, task_rx) = mpsc::channel::<(usize, PathBuf)>();
+    let (task_tx, task_rx) = mpsc::channel::<Work>();
     let task_rx = Arc::new(Mutex::new(task_rx));
-    let (result_tx, result_rx) = mpsc::channel();
+    let (result_tx, result_rx) = mpsc::sync_channel(16);
     let mut handles = vec![];
     for _ in 0..workers {
         let tasks = Arc::clone(&task_rx);
@@ -247,17 +293,23 @@ fn scan(root: &Path, job: &Arc<Job>) -> Result<String, String> {
         let job = Arc::clone(job);
         handles.push(thread::spawn(move || loop {
             let task = { tasks.lock().unwrap().recv() };
-            let Ok((id, path)) = task else { break };
+            let Ok(work) = task else { break };
             if job.cancelled.load(Ordering::Relaxed) {
                 break;
             }
-            if results.send(read_directory(id, path, &job)).is_err() {
+            let result = match work {
+                Work::Directory(id, path) => read_directory(id, path, &job, &results),
+                Work::Metadata(id, path, paths) => read_metadata(id, path, paths, &job),
+            };
+            if results.send(Event::Complete(result)).is_err() {
                 break;
             }
         }));
     }
     drop(result_tx);
-    task_tx.send((0, root.clone())).map_err(|e| e.to_string())?;
+    task_tx
+        .send(Work::Directory(0, root.clone()))
+        .map_err(|e| e.to_string())?;
     let mut pending = 1usize;
     let mut hardlinks = HashSet::new();
     let mut issues: Vec<(String, String)> = vec![];
@@ -266,7 +318,12 @@ fn scan(root: &Path, job: &Arc<Job>) -> Result<String, String> {
     let mut duplicate_count = 0usize;
     while pending > 0 && !job.cancelled.load(Ordering::Relaxed) {
         let result = match result_rx.recv_timeout(Duration::from_millis(50)) {
-            Ok(result) => result,
+            Ok(Event::Batch(work)) => {
+                task_tx.send(work).map_err(|e| e.to_string())?;
+                pending += 1;
+                continue;
+            }
+            Ok(Event::Complete(result)) => result,
             Err(mpsc::RecvTimeoutError::Timeout) => continue,
             Err(_) => break,
         };
@@ -278,6 +335,7 @@ fn scan(root: &Path, job: &Arc<Job>) -> Result<String, String> {
                 issues.push((result.path.to_string_lossy().into_owned(), error));
             }
         }
+        let mut batch_bytes = 0;
         for entry in result.entries {
             let parent = Some(result.id);
             let m = match entry.metadata {
@@ -331,18 +389,21 @@ fn scan(root: &Path, job: &Arc<Job>) -> Result<String, String> {
                 excluded,
                 unreadable: false,
             });
-            job.bytes.fetch_add(allocated, Ordering::Relaxed);
+            batch_bytes += allocated;
             excluded_count += usize::from(excluded);
             duplicate_count += usize::from(duplicate);
             if directory && !excluded {
-                if task_tx.send((id, entry.path)).is_err() {
+                if task_tx.send(Work::Directory(id, entry.path)).is_err() {
                     break;
                 }
                 pending += 1;
             }
         }
+        job.bytes.fetch_add(batch_bytes, Ordering::Relaxed);
     }
     drop(task_tx);
+    // A cancelled coordinator must release workers blocked on the bounded queue.
+    drop(result_rx);
     for handle in handles {
         if handle.join().is_err() {
             return Err("Scanner worker failed".into());
@@ -505,5 +566,47 @@ mod tests {
         assert!(ds_scan_take_result(id).is_null());
         ds_scan_destroy(id);
         assert!(ds_scan_poll(id).is_null());
+    }
+    #[test]
+    fn metadata_batches_preserve_totals_and_nested_directories() {
+        for count in [511, 512, 513, 1024, 1300] {
+            let f = Fixture::new();
+            for index in 0..count {
+                fs::write(f.0.join(format!("file-{index}")), b"x").unwrap();
+            }
+            fs::create_dir(f.0.join("nested")).unwrap();
+            fs::write(f.0.join("nested/leaf"), b"1234567").unwrap();
+            let result = f.scan();
+            assert!(result.contains(&format!("\"fileCount\":{}", count + 1)));
+            assert!(result.contains("\"directoryCount\":2"));
+            let root = result.split("},{").next().unwrap();
+            assert!(root.contains(&format!("\"logical\":{},", count + 7)));
+        }
+    }
+
+    #[test]
+    fn cancellation_during_batched_scan_releases_workers() {
+        let f = Fixture::new();
+        for index in 0..8192 {
+            fs::File::create(f.0.join(format!("file-{index}"))).unwrap();
+        }
+        let state = Arc::new(Job::default());
+        let worker_state = Arc::clone(&state);
+        let root = f.0.clone();
+        let (tx, rx) = mpsc::channel();
+        let handle = thread::spawn(move || {
+            tx.send(scan(&root, &worker_state)).unwrap();
+        });
+        let deadline = Instant::now() + Duration::from_secs(5);
+        while state.files.load(Ordering::Relaxed) == 0 && Instant::now() < deadline {
+            thread::yield_now();
+        }
+        state.cancelled.store(true, Ordering::Relaxed);
+        match rx.recv_timeout(Duration::from_secs(5)).unwrap() {
+            Err(error) => assert_eq!(error, "Cancelled"),
+            // Completion can win the race before this thread is scheduled again.
+            Ok(result) => assert!(result.contains("\"fileCount\":8192")),
+        }
+        handle.join().unwrap();
     }
 }

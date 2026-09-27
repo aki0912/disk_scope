@@ -94,17 +94,17 @@ struct TreemapView: View {
         guard let snapshot = model.snapshot else { return [] }
         var result: [RenderTile] = []
         func append(parent: Int, bounds: CGRect, depth: Int) {
-            let all = (parent == model.currentID ? model.sortedChildren : snapshot.sortedChildren(of: parent, metric: model.metric))
-                .filter { snapshot.nodes[$0].bytes(model.metric) > 0 }
             let limit = depth == 0 ? 180 : 45
-            let shown = Array(all.prefix(limit))
-            let remainder = all.dropFirst(limit)
-            let otherBytes = remainder.reduce(UInt64(0)) { $0 &+ snapshot.nodes[$1].bytes(model.metric) }
+            let selection = parent == model.currentID ? model.currentSelection : snapshot.largestChildren(of: parent, metric: model.metric, limit: limit)
+            let shown = Array(selection.ids.prefix(limit).filter { snapshot.nodes[$0].bytes(model.metric) > 0 })
+            let otherCount = selection.nonzeroCount - shown.count
+            let shownBytes = shown.reduce(UInt64(0)) { $0 &+ snapshot.nodes[$1].bytes(model.metric) }
+            let otherBytes = selection.bytes - shownBytes
             var weights = shown.map { WeightedItem(id: $0, weight: Double(snapshot.nodes[$0].bytes(model.metric))) }
             if otherBytes > 0 { weights.append(WeightedItem(id: -1, weight: Double(otherBytes))) }
             for tile in Treemap.layout(weights, in: bounds) {
                 if tile.id == -1 {
-                    result.append(RenderTile(nodeID: nil, parentID: parent, rect: tile.rect, title: "その他 \(remainder.count) 項目", bytes: otherBytes, category: .other, hasChildren: false, depth: depth))
+                    result.append(RenderTile(nodeID: nil, parentID: parent, rect: tile.rect, title: "その他 \(otherCount) 項目", bytes: otherBytes, category: .other, hasChildren: false, depth: depth))
                     continue
                 }
                 let node = snapshot.nodes[tile.id]

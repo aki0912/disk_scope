@@ -14,6 +14,8 @@ with tempfile.TemporaryDirectory(prefix="diskscope-verification-") as temporary:
         folder.mkdir()
         for index in range(250):
             (folder / f"file-{index}.txt").write_bytes(b"x" * (index + 1))
+    for index in range(1300):
+        (root / f"flat-{index}.bin").write_bytes(b"batch")
     (root / '日本語"改行\n.txt').write_bytes(b"unicode")
     (root / "empty").mkdir()
     (root / "sparse.bin").touch()
@@ -45,7 +47,7 @@ with tempfile.TemporaryDirectory(prefix="diskscope-verification-") as temporary:
             allocated += stat.st_blocks * 512
     assert result["nodes"][0]["logical"] == logical
     assert result["nodes"][0]["allocated"] == allocated
-    assert result["fileCount"] == files == 12004
+    assert result["fileCount"] == files == 13304
     assert result["duplicateCount"] == 1
     assert result["directoryCount"] == 51
     if os.geteuid() != 0:

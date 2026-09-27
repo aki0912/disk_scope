@@ -54,4 +54,36 @@ final class CoreTests: XCTestCase {
         XCTAssertEqual(ByteText.percent(1, of: 100_000), "<0.1%")
         XCTAssertEqual(ByteText.percent(0, of: 0), "0%")
     }
+    func testVisibleSelectionMatchesFullSortIncludingHiddenSearchMatches() throws {
+        let count = 2048
+        var records: [[String: Any]] = [["id": 0, "name": "fixture", "parent": NSNull(), "kind": "directory", "logical": 0, "allocated": 0, "modified": 0, "duplicate": false, "excluded": false, "unreadable": false]]
+        for id in 1...count {
+            records.append(["id": id, "name": "file-\((id * 7919) % count).txt", "parent": 0, "kind": "file", "logical": (id % 13) * 100, "allocated": (id % 11) * 4096, "modified": 0, "duplicate": false, "excluded": false, "unreadable": false])
+        }
+        let payload: [String: Any] = ["rootPath": "/fixture", "elapsed": 0, "fileCount": count, "directoryCount": 1, "issueCount": 0, "excludedCount": 0, "duplicateCount": 0, "issues": [], "nodes": records]
+        let snapshot = try ScanSnapshot(data: JSONSerialization.data(withJSONObject: payload))
+        for metric in SizeMetric.allCases {
+            for query in ["", "file-1", "FILE-20", "no-match"] {
+                let matching = snapshot.children[0].filter { query.isEmpty || snapshot.nodes[$0].name.localizedCaseInsensitiveContains(query) }
+                let reference = matching.sorted {
+                    let a = snapshot.nodes[$0], b = snapshot.nodes[$1]
+                    if a.bytes(metric) != b.bytes(metric) { return a.bytes(metric) > b.bytes(metric) }
+                    let order = a.name.localizedStandardCompare(b.name)
+                    return order == .orderedSame ? $0 < $1 : order == .orderedAscending
+                }
+                for limit in [-1, 0, 1, 45, 180, 300, 3000] {
+                    let selected = snapshot.largestChildren(of: 0, metric: metric, limit: limit, matching: query)
+                    XCTAssertEqual(selected.ids, Array(reference.prefix(max(0, limit))))
+                    XCTAssertEqual(selected.count, matching.count)
+                    XCTAssertEqual(selected.nonzeroCount, matching.filter { snapshot.nodes[$0].bytes(metric) > 0 }.count)
+                    XCTAssertEqual(selected.bytes, matching.reduce(UInt64(0)) { $0 + snapshot.nodes[$1].bytes(metric) })
+                    let shown = selected.ids.prefix(180).filter { snapshot.nodes[$0].bytes(metric) > 0 }
+                    let shownBytes = shown.reduce(UInt64(0)) { $0 + snapshot.nodes[$1].bytes(metric) }
+                    XCTAssertGreaterThanOrEqual(selected.bytes, shownBytes)
+                    XCTAssertGreaterThanOrEqual(selected.nonzeroCount, shown.count)
+                }
+            }
+        }
+    }
+
 }

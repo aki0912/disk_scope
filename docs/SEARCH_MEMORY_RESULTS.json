@@ -1,0 +1,2713 @@
+{
+  "baseline_commit": "4217d59cb6e4565a8322a6aa226d1938b33212a7",
+  "date": "2026-09-27",
+  "first_frame": {
+    "measured_runs": 8,
+    "first_run_policy": "reported separately; not a cold-cache measurement",
+    "measurement": "model.start through completion of the first nonempty Canvas renderer; excludes app startup and GPU presentation",
+    "cases": {
+      "flat-1000": {
+        "first_run": {
+          "before": {
+            "allocated_bytes": 4096000,
+            "decode_ms": 3.362666666362202,
+            "files": 1000,
+            "first_frame_ms": 95.15704166733485,
+            "logical_bytes": 1000,
+            "peak_rss_bytes": 96960512,
+            "prepare_to_frame_ms": 56.962625000778644,
+            "scan_ms": 4.141167,
+            "selection_ms": 3.140791666737641,
+            "selection_on_main": 0,
+            "json_ms": 0.525333,
+            "detection_and_handoff_ms": 27.024458333456366
+          },
+          "after": {
+            "allocated_bytes": 4096000,
+            "decode_ms": 2.890583333282848,
+            "files": 1000,
+            "first_frame_ms": 105.99241666659509,
+            "logical_bytes": 1000,
+            "peak_rss_bytes": 96419840,
+            "prepare_to_frame_ms": 68.31750000037573,
+            "scan_ms": 4.140874999999999,
+            "selection_ms": 2.958750000289001,
+            "selection_on_main": 0,
+            "json_ms": 0.43937499999999996,
+            "detection_and_handoff_ms": 27.24533333264752
+          }
+        },
+        "samples": {
+          "before": [
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.1341666663138312,
+              "files": 1000,
+              "first_frame_ms": 89.60745833337569,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96256000,
+              "prepare_to_frame_ms": 54.05020833313756,
+              "scan_ms": 3.8438339999999998,
+              "selection_ms": 2.970916666527046,
+              "selection_on_main": 0,
+              "json_ms": 0.401667,
+              "detection_and_handoff_ms": 25.206665667397246
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.1348749998869607,
+              "files": 1000,
+              "first_frame_ms": 96.44804166691756,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96862208,
+              "prepare_to_frame_ms": 54.99074999988807,
+              "scan_ms": 4.606458,
+              "selection_ms": 2.966125000057218,
+              "selection_on_main": 0,
+              "json_ms": 0.41724999999999995,
+              "detection_and_handoff_ms": 30.332583667085316
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.0525833335559582,
+              "files": 1000,
+              "first_frame_ms": 96.87195833339501,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96714752,
+              "prepare_to_frame_ms": 54.682375000083994,
+              "scan_ms": 4.72225,
+              "selection_ms": 2.963333333354967,
+              "selection_on_main": 0,
+              "json_ms": 0.295209,
+              "detection_and_handoff_ms": 31.156207666400093
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 2.7213333332838374,
+              "files": 1000,
+              "first_frame_ms": 99.04287500012288,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96534528,
+              "prepare_to_frame_ms": 64.15208333328337,
+              "scan_ms": 3.339084,
+              "selection_ms": 2.535458333113638,
+              "selection_on_main": 0,
+              "json_ms": 0.267583,
+              "detection_and_handoff_ms": 26.027333000442027
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.098416666034609,
+              "files": 1000,
+              "first_frame_ms": 90.41712500038557,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96862208,
+              "prepare_to_frame_ms": 50.79775000012887,
+              "scan_ms": 4.696291,
+              "selection_ms": 2.905000000282598,
+              "selection_on_main": 0,
+              "json_ms": 0.415458,
+              "detection_and_handoff_ms": 28.504209333939485
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.3374583326803986,
+              "files": 1000,
+              "first_frame_ms": 85.59370833336288,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96190464,
+              "prepare_to_frame_ms": 54.66187500041997,
+              "scan_ms": 3.28825,
+              "selection_ms": 3.169333333062241,
+              "selection_on_main": 0,
+              "json_ms": 0.354042,
+              "detection_and_handoff_ms": 20.782749667200264
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.6682083336927462,
+              "files": 1000,
+              "first_frame_ms": 92.58833333296934,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96731136,
+              "prepare_to_frame_ms": 56.13825000000361,
+              "scan_ms": 3.82625,
+              "selection_ms": 3.219291666027857,
+              "selection_on_main": 0,
+              "json_ms": 0.38725,
+              "detection_and_handoff_ms": 25.349083333245133
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.216249999240972,
+              "files": 1000,
+              "first_frame_ms": 89.65287499995611,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96485376,
+              "prepare_to_frame_ms": 53.55637499997101,
+              "scan_ms": 4.431541,
+              "selection_ms": 2.9703333329962334,
+              "selection_on_main": 0,
+              "json_ms": 0.39429200000000003,
+              "detection_and_handoff_ms": 25.084083667747905
+            }
+          ],
+          "after": [
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.1084166666914825,
+              "files": 1000,
+              "first_frame_ms": 95.77866666677437,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96796672,
+              "prepare_to_frame_ms": 54.93404166736582,
+              "scan_ms": 4.595375,
+              "selection_ms": 2.873416666261619,
+              "selection_on_main": 0,
+              "json_ms": 0.40058299999999997,
+              "detection_and_handoff_ms": 29.86683366645545
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.3018750000337604,
+              "files": 1000,
+              "first_frame_ms": 92.64412500033359,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96698368,
+              "prepare_to_frame_ms": 55.34670833367272,
+              "scan_ms": 4.396917,
+              "selection_ms": 3.200500000275497,
+              "selection_on_main": 0,
+              "json_ms": 0.38733300000000004,
+              "detection_and_handoff_ms": 26.010791666351608
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 4.247583333381044,
+              "files": 1000,
+              "first_frame_ms": 90.47104166711506,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96763904,
+              "prepare_to_frame_ms": 60.018666667019716,
+              "scan_ms": 2.988334,
+              "selection_ms": 3.4125833326470456,
+              "selection_on_main": 0,
+              "json_ms": 0.249417,
+              "detection_and_handoff_ms": 19.554457334067266
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 2.9881666660003248,
+              "files": 1000,
+              "first_frame_ms": 104.16954166612413,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96780288,
+              "prepare_to_frame_ms": 63.82462500005204,
+              "scan_ms": 4.4978750000000005,
+              "selection_ms": 2.768666666270292,
+              "selection_on_main": 0,
+              "json_ms": 0.334833,
+              "detection_and_handoff_ms": 29.75537533380148
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.1529999996564584,
+              "files": 1000,
+              "first_frame_ms": 92.10350000012113,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96747520,
+              "prepare_to_frame_ms": 54.81099999997241,
+              "scan_ms": 3.767417,
+              "selection_ms": 3.0740000001969747,
+              "selection_on_main": 0,
+              "json_ms": 0.24312499999999998,
+              "detection_and_handoff_ms": 27.054958000295287
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.214875000594475,
+              "files": 1000,
+              "first_frame_ms": 90.82208333347808,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96911360,
+              "prepare_to_frame_ms": 54.440041666566685,
+              "scan_ms": 4.872375,
+              "selection_ms": 3.1019583339002565,
+              "selection_on_main": 0,
+              "json_ms": 0.2095,
+              "detection_and_handoff_ms": 24.98333333241665
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.158791666464822,
+              "files": 1000,
+              "first_frame_ms": 92.17595833342784,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96698368,
+              "prepare_to_frame_ms": 54.72104166619829,
+              "scan_ms": 4.4962919999999995,
+              "selection_ms": 3.0662916660730843,
+              "selection_on_main": 0,
+              "json_ms": 0.39683399999999996,
+              "detection_and_handoff_ms": 26.336707334691653
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.538624999237072,
+              "files": 1000,
+              "first_frame_ms": 90.39595833291969,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96583680,
+              "prepare_to_frame_ms": 57.31404166635912,
+              "scan_ms": 3.5964579999999997,
+              "selection_ms": 3.1770833338669036,
+              "selection_on_main": 0,
+              "json_ms": 0.334709,
+              "detection_and_handoff_ms": 22.435041333456596
+            }
+          ]
+        },
+        "summary": {
+          "before": {
+            "median": {
+              "allocated_bytes": 4096000.0,
+              "decode_ms": 3.134520833100396,
+              "files": 1000.0,
+              "first_frame_ms": 91.50272916667745,
+              "logical_bytes": 1000.0,
+              "peak_rss_bytes": 96624640.0,
+              "prepare_to_frame_ms": 54.67212500025198,
+              "scan_ms": 4.1376875,
+              "selection_ms": 2.9682291665267257,
+              "selection_on_main": 0.0,
+              "json_ms": 0.390771,
+              "detection_and_handoff_ms": 25.68820816684358
+            },
+            "p95_first_frame_ms": 99.04287500012288,
+            "max_peak_rss_bytes": 96862208
+          },
+          "after": {
+            "median": {
+              "allocated_bytes": 4096000.0,
+              "decode_ms": 3.1868333335296484,
+              "files": 1000.0,
+              "first_frame_ms": 92.13972916677449,
+              "logical_bytes": 1000.0,
+              "peak_rss_bytes": 96755712.0,
+              "prepare_to_frame_ms": 55.14037500051927,
+              "scan_ms": 4.446604499999999,
+              "selection_ms": 3.0879791670486156,
+              "selection_on_main": 0.0,
+              "json_ms": 0.334771,
+              "detection_and_handoff_ms": 26.17374950052163
+            },
+            "p95_first_frame_ms": 104.16954166612413,
+            "max_peak_rss_bytes": 96911360
+          }
+        }
+      },
+      "nested-1000": {
+        "first_run": {
+          "after": {
+            "allocated_bytes": 4096000,
+            "decode_ms": 3.336541666612902,
+            "files": 1000,
+            "first_frame_ms": 101.01458333338087,
+            "logical_bytes": 1000,
+            "peak_rss_bytes": 95813632,
+            "prepare_to_frame_ms": 62.90566666666564,
+            "scan_ms": 3.7726669999999998,
+            "selection_ms": 0.0228749995585531,
+            "selection_on_main": 0,
+            "json_ms": 0.313917,
+            "detection_and_handoff_ms": 30.662916000543774
+          },
+          "before": {
+            "allocated_bytes": 4096000,
+            "decode_ms": 4.2802499992831144,
+            "files": 1000,
+            "first_frame_ms": 88.4204583335304,
+            "logical_bytes": 1000,
+            "peak_rss_bytes": 95567872,
+            "prepare_to_frame_ms": 55.92012499982957,
+            "scan_ms": 4.1417090000000005,
+            "selection_ms": 0.02820833287842106,
+            "selection_on_main": 0,
+            "json_ms": 0.457459,
+            "detection_and_handoff_ms": 23.592707001539296
+          }
+        },
+        "samples": {
+          "before": [
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.758291666599689,
+              "files": 1000,
+              "first_frame_ms": 86.02620833335095,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95518720,
+              "prepare_to_frame_ms": 51.19383333294536,
+              "scan_ms": 4.709,
+              "selection_ms": 0.023249999685504008,
+              "selection_on_main": 0,
+              "json_ms": 0.449042,
+              "detection_and_handoff_ms": 25.89279133412039
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.541041666721867,
+              "files": 1000,
+              "first_frame_ms": 83.79087499997695,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95518720,
+              "prepare_to_frame_ms": 50.963374999810185,
+              "scan_ms": 3.3241669999999996,
+              "selection_ms": 0.023499999770137947,
+              "selection_on_main": 0,
+              "json_ms": 0.390834,
+              "detection_and_handoff_ms": 25.54795733367476
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.025500000148895,
+              "files": 1000,
+              "first_frame_ms": 82.06345833332307,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 96256000,
+              "prepare_to_frame_ms": 52.841708333289716,
+              "scan_ms": 3.332167,
+              "selection_ms": 0.01929166683112271,
+              "selection_on_main": 0,
+              "json_ms": 0.314125,
+              "detection_and_handoff_ms": 22.530666333053333
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.7702916670241393,
+              "files": 1000,
+              "first_frame_ms": 98.71724999993603,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95322112,
+              "prepare_to_frame_ms": 62.291666666169476,
+              "scan_ms": 3.9140829999999998,
+              "selection_ms": 0.026000000616477337,
+              "selection_on_main": 0,
+              "json_ms": 0.462083,
+              "detection_and_handoff_ms": 28.253125666125925
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.656583333395247,
+              "files": 1000,
+              "first_frame_ms": 87.460583333268,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95436800,
+              "prepare_to_frame_ms": 53.38187500001368,
+              "scan_ms": 2.850333,
+              "selection_ms": 0.02220833266619593,
+              "selection_on_main": 0,
+              "json_ms": 0.465042,
+              "detection_and_handoff_ms": 27.08454166719288
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.6354583335196367,
+              "files": 1000,
+              "first_frame_ms": 92.75054166664631,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95682560,
+              "prepare_to_frame_ms": 53.06862500037823,
+              "scan_ms": 7.3266670000000005,
+              "selection_ms": 0.022166666894918308,
+              "selection_on_main": 0,
+              "json_ms": 0.469084,
+              "detection_and_handoff_ms": 28.22854066585353
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.7928333340460085,
+              "files": 1000,
+              "first_frame_ms": 83.4512083338268,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95404032,
+              "prepare_to_frame_ms": 52.48837500039372,
+              "scan_ms": 3.22025,
+              "selection_ms": 0.022291666937235277,
+              "selection_on_main": 0,
+              "json_ms": 0.37841600000000003,
+              "detection_and_handoff_ms": 23.549042332449844
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.7401249992399244,
+              "files": 1000,
+              "first_frame_ms": 95.567375000428,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95485952,
+              "prepare_to_frame_ms": 61.88416666645935,
+              "scan_ms": 3.5062499999999996,
+              "selection_ms": 0.03016666687472025,
+              "selection_on_main": 0,
+              "json_ms": 0.396458,
+              "detection_and_handoff_ms": 26.010208667854016
+            }
+          ],
+          "after": [
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.2139583336174837,
+              "files": 1000,
+              "first_frame_ms": 78.45354166602192,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95633408,
+              "prepare_to_frame_ms": 49.74212499928399,
+              "scan_ms": 3.179417,
+              "selection_ms": 0.020750000658154022,
+              "selection_on_main": 0,
+              "json_ms": 0.298333,
+              "detection_and_handoff_ms": 21.998958332462294
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 4.014125000139757,
+              "files": 1000,
+              "first_frame_ms": 90.10687499994674,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95797248,
+              "prepare_to_frame_ms": 55.520083333249204,
+              "scan_ms": 5.140750000000001,
+              "selection_ms": 0.023083332962414715,
+              "selection_on_main": 0,
+              "json_ms": 0.44425,
+              "detection_and_handoff_ms": 24.96458333359537
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.947541666093457,
+              "files": 1000,
+              "first_frame_ms": 92.84412500073813,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95862784,
+              "prepare_to_frame_ms": 56.41629166711937,
+              "scan_ms": 5.527,
+              "selection_ms": 0.026833333322429098,
+              "selection_on_main": 0,
+              "json_ms": 0.42725,
+              "detection_and_handoff_ms": 26.499208334202876
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.3614583326198044,
+              "files": 1000,
+              "first_frame_ms": 100.21137500007171,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95797248,
+              "prepare_to_frame_ms": 62.650874999235384,
+              "scan_ms": 3.419583,
+              "selection_ms": 0.025750000531843398,
+              "selection_on_main": 0,
+              "json_ms": 0.38537499999999997,
+              "detection_and_handoff_ms": 30.36833366768468
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.380916667083511,
+              "files": 1000,
+              "first_frame_ms": 91.39483333274256,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95813632,
+              "prepare_to_frame_ms": 55.01341666604276,
+              "scan_ms": 4.503458,
+              "selection_ms": 0.02033333294093609,
+              "selection_on_main": 0,
+              "json_ms": 0.455791,
+              "detection_and_handoff_ms": 28.02091766667536
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.708833332893846,
+              "files": 1000,
+              "first_frame_ms": 86.9922083338679,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95977472,
+              "prepare_to_frame_ms": 55.147166666756675,
+              "scan_ms": 3.403667,
+              "selection_ms": 0.02366666649322724,
+              "selection_on_main": 0,
+              "json_ms": 0.380542,
+              "detection_and_handoff_ms": 24.32833266772414
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 2.4935416668085963,
+              "files": 1000,
+              "first_frame_ms": 91.82854166647303,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95879168,
+              "prepare_to_frame_ms": 54.087166666249686,
+              "scan_ms": 4.28975,
+              "selection_ms": 0.019833333681162912,
+              "selection_on_main": 0,
+              "json_ms": 0.446958,
+              "detection_and_handoff_ms": 30.49129199973359
+            },
+            {
+              "allocated_bytes": 4096000,
+              "decode_ms": 3.406458333301998,
+              "files": 1000,
+              "first_frame_ms": 86.58154166641907,
+              "logical_bytes": 1000,
+              "peak_rss_bytes": 95649792,
+              "prepare_to_frame_ms": 51.95729166644014,
+              "scan_ms": 3.475166,
+              "selection_ms": 0.02312499964318704,
+              "selection_on_main": 0,
+              "json_ms": 0.433166,
+              "detection_and_handoff_ms": 27.286334667033742
+            }
+          ]
+        },
+        "summary": {
+          "before": {
+            "median": {
+              "allocated_bytes": 4096000.0,
+              "decode_ms": 3.6983541663175856,
+              "files": 1000.0,
+              "first_frame_ms": 86.74339583330948,
+              "logical_bytes": 1000.0,
+              "peak_rss_bytes": 95502336.0,
+              "prepare_to_frame_ms": 52.955166666833975,
+              "scan_ms": 3.4192085,
+              "selection_ms": 0.022770833311369643,
+              "selection_on_main": 0.0,
+              "json_ms": 0.42274999999999996,
+              "detection_and_handoff_ms": 25.951500000987203
+            },
+            "p95_first_frame_ms": 98.71724999993603,
+            "max_peak_rss_bytes": 96256000
+          },
+          "after": {
+            "median": {
+              "allocated_bytes": 4096000.0,
+              "decode_ms": 3.3936875001927547,
+              "files": 1000.0,
+              "first_frame_ms": 90.75085416634465,
+              "logical_bytes": 1000.0,
+              "peak_rss_bytes": 95805440.0,
+              "prepare_to_frame_ms": 55.08029166639972,
+              "scan_ms": 3.8824579999999997,
+              "selection_ms": 0.023104166302800877,
+              "selection_on_main": 0.0,
+              "json_ms": 0.43020800000000003,
+              "detection_and_handoff_ms": 26.89277150061831
+            },
+            "p95_first_frame_ms": 100.21137500007171,
+            "max_peak_rss_bytes": 95977472
+          }
+        }
+      },
+      "flat-10000": {
+        "first_run": {
+          "before": {
+            "allocated_bytes": 40960000,
+            "decode_ms": 27.550291666557314,
+            "files": 10000,
+            "first_frame_ms": 113.67033333317522,
+            "logical_bytes": 10000,
+            "peak_rss_bytes": 112082944,
+            "prepare_to_frame_ms": 49.177083333233895,
+            "scan_ms": 13.319083000000001,
+            "selection_ms": 6.3267083332902985,
+            "selection_on_main": 0,
+            "json_ms": 2.939417,
+            "detection_and_handoff_ms": 14.357750000093702
+          },
+          "after": {
+            "allocated_bytes": 40960000,
+            "decode_ms": 27.933458332881855,
+            "files": 10000,
+            "first_frame_ms": 105.89987500043208,
+            "logical_bytes": 10000,
+            "peak_rss_bytes": 110903296,
+            "prepare_to_frame_ms": 49.24174999996467,
+            "scan_ms": 13.280667,
+            "selection_ms": 6.431416666600853,
+            "selection_on_main": 0,
+            "json_ms": 2.5703750000000003,
+            "detection_and_handoff_ms": 6.4422080009847065
+          }
+        },
+        "samples": {
+          "before": [
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 28.066500000022643,
+              "files": 10000,
+              "first_frame_ms": 104.64166666679375,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 111820800,
+              "prepare_to_frame_ms": 48.48425000000134,
+              "scan_ms": 12.861792000000001,
+              "selection_ms": 6.47575000039069,
+              "selection_on_main": 0,
+              "json_ms": 2.800625,
+              "detection_and_handoff_ms": 5.952749666379077
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 30.076624999310297,
+              "files": 10000,
+              "first_frame_ms": 109.64708333267481,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110821376,
+              "prepare_to_frame_ms": 48.87366666662274,
+              "scan_ms": 13.770334,
+              "selection_ms": 6.56812500074011,
+              "selection_on_main": 0,
+              "json_ms": 3.306958,
+              "detection_and_handoff_ms": 7.051374666001664
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 23.19829166663112,
+              "files": 10000,
+              "first_frame_ms": 114.9971666663987,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 111951872,
+              "prepare_to_frame_ms": 59.22591666694643,
+              "scan_ms": 9.986834,
+              "selection_ms": 5.960708333077491,
+              "selection_on_main": 0,
+              "json_ms": 1.785334,
+              "detection_and_handoff_ms": 14.840081999743646
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 29.1889166664987,
+              "files": 10000,
+              "first_frame_ms": 109.42779166634864,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 111493120,
+              "prepare_to_frame_ms": 47.88970833305939,
+              "scan_ms": 15.837875,
+              "selection_ms": 6.437500000174623,
+              "selection_on_main": 0,
+              "json_ms": 2.740583,
+              "detection_and_handoff_ms": 7.333208666615931
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.98841666642693,
+              "files": 10000,
+              "first_frame_ms": 113.78049999984796,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 112295936,
+              "prepare_to_frame_ms": 47.930541666573845,
+              "scan_ms": 14.708458,
+              "selection_ms": 6.25987500006886,
+              "selection_on_main": 0,
+              "json_ms": 2.800084,
+              "detection_and_handoff_ms": 15.093124666778323
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.990791666321456,
+              "files": 10000,
+              "first_frame_ms": 115.73412500001723,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110755840,
+              "prepare_to_frame_ms": 52.327666666315054,
+              "scan_ms": 13.307375,
+              "selection_ms": 6.310499999926833,
+              "selection_on_main": 0,
+              "json_ms": 2.935292,
+              "detection_and_handoff_ms": 13.862499667453875
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.973958332746406,
+              "files": 10000,
+              "first_frame_ms": 109.08862499945826,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 112017408,
+              "prepare_to_frame_ms": 46.23004166660394,
+              "scan_ms": 13.423957999999999,
+              "selection_ms": 6.342000000586268,
+              "selection_on_main": 0,
+              "json_ms": 2.839875,
+              "detection_and_handoff_ms": 13.278791999521644
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 29.65958333334129,
+              "files": 10000,
+              "first_frame_ms": 104.03766666604497,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 111624192,
+              "prepare_to_frame_ms": 47.79966666683322,
+              "scan_ms": 12.208458,
+              "selection_ms": 6.602500000553846,
+              "selection_on_main": 0,
+              "json_ms": 2.8801669999999997,
+              "detection_and_handoff_ms": 4.88729166531661
+            }
+          ],
+          "after": [
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 27.291333332868817,
+              "files": 10000,
+              "first_frame_ms": 113.06400000012218,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110526464,
+              "prepare_to_frame_ms": 48.82550000002084,
+              "scan_ms": 12.150667,
+              "selection_ms": 6.426124999961758,
+              "selection_on_main": 0,
+              "json_ms": 3.1722080000000004,
+              "detection_and_handoff_ms": 15.198166667270769
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.745166666842124,
+              "files": 10000,
+              "first_frame_ms": 117.70462500044232,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 109723648,
+              "prepare_to_frame_ms": 52.584833333639835,
+              "scan_ms": 14.432333,
+              "selection_ms": 6.339333333016839,
+              "selection_on_main": 0,
+              "json_ms": 2.65625,
+              "detection_and_handoff_ms": 14.946708666943522
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 24.68387499993696,
+              "files": 10000,
+              "first_frame_ms": 105.81979166727251,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110673920,
+              "prepare_to_frame_ms": 50.22425000061048,
+              "scan_ms": 10.422208000000001,
+              "selection_ms": 5.9508333333724295,
+              "selection_on_main": 0,
+              "json_ms": 2.332625,
+              "detection_and_handoff_ms": 12.206000333352648
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.277124999978696,
+              "files": 10000,
+              "first_frame_ms": 113.49266666638869,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110985216,
+              "prepare_to_frame_ms": 49.70866666644724,
+              "scan_ms": 14.339958,
+              "selection_ms": 6.283249999796681,
+              "selection_on_main": 0,
+              "json_ms": 2.6275,
+              "detection_and_handoff_ms": 14.256167000166073
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.373458333182498,
+              "files": 10000,
+              "first_frame_ms": 112.3576249992766,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110215168,
+              "prepare_to_frame_ms": 50.74866666654998,
+              "scan_ms": 12.983166,
+              "selection_ms": 6.22470833332045,
+              "selection_on_main": 0,
+              "json_ms": 2.6985419999999998,
+              "detection_and_handoff_ms": 13.329083666223667
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 27.07616666702961,
+              "files": 10000,
+              "first_frame_ms": 117.3874166661335,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 109641728,
+              "prepare_to_frame_ms": 53.197458332761016,
+              "scan_ms": 13.119667,
+              "selection_ms": 6.170624999867869,
+              "selection_on_main": 0,
+              "json_ms": 2.6362080000000003,
+              "detection_and_handoff_ms": 15.18729166647502
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.020416667051904,
+              "files": 10000,
+              "first_frame_ms": 111.73462499937159,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110739456,
+              "prepare_to_frame_ms": 57.667458333526156,
+              "scan_ms": 11.303666999999999,
+              "selection_ms": 6.088333333536866,
+              "selection_on_main": 0,
+              "json_ms": 2.138833,
+              "detection_and_handoff_ms": 8.515916665256654
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.10720833308733,
+              "files": 10000,
+              "first_frame_ms": 111.41441666677565,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 109494272,
+              "prepare_to_frame_ms": 49.852166666823905,
+              "scan_ms": 13.0435,
+              "selection_ms": 6.269791666454694,
+              "selection_on_main": 0,
+              "json_ms": 2.749208,
+              "detection_and_handoff_ms": 13.392542000409733
+            }
+          ]
+        },
+        "summary": {
+          "before": {
+            "median": {
+              "allocated_bytes": 40960000.0,
+              "decode_ms": 27.52864583317205,
+              "files": 10000.0,
+              "first_frame_ms": 109.53743749951173,
+              "logical_bytes": 10000.0,
+              "peak_rss_bytes": 111722496.0,
+              "prepare_to_frame_ms": 48.20739583328759,
+              "scan_ms": 13.3656665,
+              "selection_ms": 6.389750000380445,
+              "selection_on_main": 0.0,
+              "json_ms": 2.82025,
+              "detection_and_handoff_ms": 10.306000333068788
+            },
+            "p95_first_frame_ms": 115.73412500001723,
+            "max_peak_rss_bytes": 112295936
+          },
+          "after": {
+            "median": {
+              "allocated_bytes": 40960000.0,
+              "decode_ms": 26.325291666580597,
+              "files": 10000.0,
+              "first_frame_ms": 112.71081249969939,
+              "logical_bytes": 10000.0,
+              "peak_rss_bytes": 110370816.0,
+              "prepare_to_frame_ms": 50.48645833358023,
+              "scan_ms": 13.013333,
+              "selection_ms": 6.247249999887572,
+              "selection_on_main": 0.0,
+              "json_ms": 2.646229,
+              "detection_and_handoff_ms": 13.824354500287903
+            },
+            "p95_first_frame_ms": 117.70462500044232,
+            "max_peak_rss_bytes": 110985216
+          }
+        }
+      },
+      "nested-10000": {
+        "first_run": {
+          "after": {
+            "allocated_bytes": 40960000,
+            "decode_ms": 26.44574999976612,
+            "files": 10000,
+            "first_frame_ms": 110.16012500022043,
+            "logical_bytes": 10000,
+            "peak_rss_bytes": 109117440,
+            "prepare_to_frame_ms": 51.989291667268844,
+            "scan_ms": 12.356625,
+            "selection_ms": 0.02499999936844688,
+            "selection_on_main": 0,
+            "json_ms": 2.698042,
+            "detection_and_handoff_ms": 16.645416333817025
+          },
+          "before": {
+            "allocated_bytes": 40960000,
+            "decode_ms": 25.806124999689928,
+            "files": 10000,
+            "first_frame_ms": 111.23862500062387,
+            "logical_bytes": 10000,
+            "peak_rss_bytes": 110018560,
+            "prepare_to_frame_ms": 56.50400000013178,
+            "scan_ms": 11.688416,
+            "selection_ms": 0.02816666710714344,
+            "selection_on_main": 0,
+            "json_ms": 2.488333,
+            "detection_and_handoff_ms": 14.723584333695015
+          }
+        },
+        "samples": {
+          "before": [
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 29.07395833335613,
+              "files": 10000,
+              "first_frame_ms": 117.62695833294856,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 109936640,
+              "prepare_to_frame_ms": 62.339958332813694,
+              "scan_ms": 13.074375,
+              "selection_ms": 0.029416666620818432,
+              "selection_on_main": 0,
+              "json_ms": 3.077167,
+              "detection_and_handoff_ms": 10.032083000157911
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 29.56683333377441,
+              "files": 10000,
+              "first_frame_ms": 99.83070833277452,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110706688,
+              "prepare_to_frame_ms": 49.982541666395264,
+              "scan_ms": 11.041916,
+              "selection_ms": 0.028541666324599646,
+              "selection_on_main": 0,
+              "json_ms": 3.0395830000000004,
+              "detection_and_handoff_ms": 6.171292666280237
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 27.722875000108615,
+              "files": 10000,
+              "first_frame_ms": 107.61849999926199,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 109985792,
+              "prepare_to_frame_ms": 47.74329166593816,
+              "scan_ms": 13.3355,
+              "selection_ms": 0.021249999917927198,
+              "selection_on_main": 0,
+              "json_ms": 2.869042,
+              "detection_and_handoff_ms": 15.926541333297294
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 27.067499999247957,
+              "files": 10000,
+              "first_frame_ms": 103.71558333281428,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110149632,
+              "prepare_to_frame_ms": 45.700624999881256,
+              "scan_ms": 14.19475,
+              "selection_ms": 0.021041666514065582,
+              "selection_on_main": 0,
+              "json_ms": 2.8896669999999998,
+              "detection_and_handoff_ms": 13.841999667170995
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 29.210291666458943,
+              "files": 10000,
+              "first_frame_ms": 106.1761666669554,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110477312,
+              "prepare_to_frame_ms": 53.1678750003266,
+              "scan_ms": 11.713208,
+              "selection_ms": 0.02966666670545237,
+              "selection_on_main": 0,
+              "json_ms": 2.9606250000000003,
+              "detection_and_handoff_ms": 9.094500333464396
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 27.16804166630027,
+              "files": 10000,
+              "first_frame_ms": 107.50600000028498,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110149632,
+              "prepare_to_frame_ms": 46.7075416672742,
+              "scan_ms": 15.864165999999999,
+              "selection_ms": 0.02408333330095047,
+              "selection_on_main": 0,
+              "json_ms": 2.8457500000000002,
+              "detection_and_handoff_ms": 14.896417333409573
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 27.596833332609094,
+              "files": 10000,
+              "first_frame_ms": 107.98291666651494,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110198784,
+              "prepare_to_frame_ms": 48.358416666815174,
+              "scan_ms": 13.7935,
+              "selection_ms": 0.0217916667679674,
+              "selection_on_main": 0,
+              "json_ms": 2.91175,
+              "detection_and_handoff_ms": 15.300625000322711
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 29.890083333157236,
+              "files": 10000,
+              "first_frame_ms": 107.53100000056293,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 110084096,
+              "prepare_to_frame_ms": 52.36733333367738,
+              "scan_ms": 14.4365,
+              "selection_ms": 0.02554166621848708,
+              "selection_on_main": 0,
+              "json_ms": 3.060333,
+              "detection_and_handoff_ms": 7.751208667509829
+            }
+          ],
+          "after": [
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.742458333501418,
+              "files": 10000,
+              "first_frame_ms": 109.5821666667689,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 108937216,
+              "prepare_to_frame_ms": 51.41708333303541,
+              "scan_ms": 12.293292000000001,
+              "selection_ms": 0.02833333292073803,
+              "selection_on_main": 0,
+              "json_ms": 2.7395,
+              "detection_and_handoff_ms": 16.36149966731132
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 29.63125000042055,
+              "files": 10000,
+              "first_frame_ms": 105.21216666620603,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 109264896,
+              "prepare_to_frame_ms": 50.510083333392686,
+              "scan_ms": 13.101292,
+              "selection_ms": 0.019791666090895887,
+              "selection_on_main": 0,
+              "json_ms": 2.946667,
+              "detection_and_handoff_ms": 9.003082666301893
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 28.31233333381533,
+              "files": 10000,
+              "first_frame_ms": 101.64824999992561,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 109592576,
+              "prepare_to_frame_ms": 51.086874999782594,
+              "scan_ms": 10.005625,
+              "selection_ms": 0.023874999897088856,
+              "selection_on_main": 0,
+              "json_ms": 1.814125,
+              "detection_and_handoff_ms": 10.405416666430597
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.65570833323727,
+              "files": 10000,
+              "first_frame_ms": 103.47445833394886,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 108773376,
+              "prepare_to_frame_ms": 46.07416666658537,
+              "scan_ms": 12.02825,
+              "selection_ms": 0.021208333237154875,
+              "selection_on_main": 0,
+              "json_ms": 2.7927500000000003,
+              "detection_and_handoff_ms": 15.902375000889066
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.31941666641069,
+              "files": 10000,
+              "first_frame_ms": 108.56191666698578,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 108888064,
+              "prepare_to_frame_ms": 51.68354166744393,
+              "scan_ms": 12.455124999999999,
+              "selection_ms": 0.024833333554852288,
+              "selection_on_main": 0,
+              "json_ms": 2.640917,
+              "detection_and_handoff_ms": 15.43808299957631
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 27.418416667387646,
+              "files": 10000,
+              "first_frame_ms": 104.13087500000984,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 108806144,
+              "prepare_to_frame_ms": 46.67904166672088,
+              "scan_ms": 12.260584,
+              "selection_ms": 0.025374999495397788,
+              "selection_on_main": 0,
+              "json_ms": 2.7055,
+              "detection_and_handoff_ms": 15.04195766640592
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.731625000138592,
+              "files": 10000,
+              "first_frame_ms": 106.5551666670217,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 109019136,
+              "prepare_to_frame_ms": 48.280291666742414,
+              "scan_ms": 14.135833,
+              "selection_ms": 0.02170833249692805,
+              "selection_on_main": 0,
+              "json_ms": 2.6921660000000003,
+              "detection_and_handoff_ms": 14.693542667643754
+            },
+            {
+              "allocated_bytes": 40960000,
+              "decode_ms": 26.862249999794585,
+              "files": 10000,
+              "first_frame_ms": 107.53337499954796,
+              "logical_bytes": 10000,
+              "peak_rss_bytes": 109821952,
+              "prepare_to_frame_ms": 48.91683333335095,
+              "scan_ms": 13.607625,
+              "selection_ms": 0.024041666620178148,
+              "selection_on_main": 0,
+              "json_ms": 2.760166,
+              "detection_and_handoff_ms": 15.362458999782248
+            }
+          ]
+        },
+        "summary": {
+          "before": {
+            "median": {
+              "allocated_bytes": 40960000.0,
+              "decode_ms": 28.398416666732373,
+              "files": 10000.0,
+              "first_frame_ms": 107.51850000042396,
+              "logical_bytes": 10000.0,
+              "peak_rss_bytes": 110149632.0,
+              "prepare_to_frame_ms": 49.17047916660522,
+              "scan_ms": 13.564499999999999,
+              "selection_ms": 0.024812499759718776,
+              "selection_on_main": 0.0,
+              "json_ms": 2.9361875,
+              "detection_and_handoff_ms": 11.937041333664453
+            },
+            "p95_first_frame_ms": 117.62695833294856,
+            "max_peak_rss_bytes": 110706688
+          },
+          "after": {
+            "median": {
+              "allocated_bytes": 40960000.0,
+              "decode_ms": 26.802354166648,
+              "files": 10000.0,
+              "first_frame_ms": 105.88366666661386,
+              "logical_bytes": 10000.0,
+              "peak_rss_bytes": 108978176.0,
+              "prepare_to_frame_ms": 49.71345833337182,
+              "scan_ms": 12.3742085,
+              "selection_ms": 0.023958333258633502,
+              "selection_on_main": 0.0,
+              "json_ms": 2.7225,
+              "detection_and_handoff_ms": 15.202208333094084
+            },
+            "p95_first_frame_ms": 109.5821666667689,
+            "max_peak_rss_bytes": 109821952
+          }
+        }
+      },
+      "flat-50000": {
+        "first_run": {
+          "before": {
+            "allocated_bytes": 204800000,
+            "decode_ms": 103.76133333284088,
+            "files": 50000,
+            "first_frame_ms": 231.0840416666906,
+            "logical_bytes": 50000,
+            "peak_rss_bytes": 147095552,
+            "prepare_to_frame_ms": 54.49141666667856,
+            "scan_ms": 47.678333,
+            "selection_ms": 15.079374999913853,
+            "selection_on_main": 0,
+            "json_ms": 8.146709,
+            "detection_and_handoff_ms": 1.926874667257323
+          },
+          "after": {
+            "allocated_bytes": 204800000,
+            "decode_ms": 105.85662500034232,
+            "files": 50000,
+            "first_frame_ms": 228.8576249993639,
+            "logical_bytes": 50000,
+            "peak_rss_bytes": 137625600,
+            "prepare_to_frame_ms": 50.558041666590725,
+            "scan_ms": 47.746417,
+            "selection_ms": 15.120083333385992,
+            "selection_on_main": 0,
+            "json_ms": 7.771959,
+            "detection_and_handoff_ms": 1.8044989990448528
+          }
+        },
+        "samples": {
+          "before": [
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 103.67812500044238,
+              "files": 50000,
+              "first_frame_ms": 219.65349999936734,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 143507456,
+              "prepare_to_frame_ms": 48.363291666646546,
+              "scan_ms": 42.137916999999995,
+              "selection_ms": 14.981000000261702,
+              "selection_on_main": 0,
+              "json_ms": 8.677292,
+              "detection_and_handoff_ms": 1.8158743320167332
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 104.01649999948859,
+              "files": 50000,
+              "first_frame_ms": 218.31295833271724,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 143212544,
+              "prepare_to_frame_ms": 45.158416666708945,
+              "scan_ms": 43.432917,
+              "selection_ms": 14.945999999326887,
+              "selection_on_main": 0,
+              "json_ms": 8.9695,
+              "detection_and_handoff_ms": 1.789624667192811
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 106.61266666738811,
+              "files": 50000,
+              "first_frame_ms": 238.1899166666699,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 144490496,
+              "prepare_to_frame_ms": 56.53479166630859,
+              "scan_ms": 47.087542000000006,
+              "selection_ms": 17.432666666536534,
+              "selection_on_main": 0,
+              "json_ms": 8.421584,
+              "detection_and_handoff_ms": 2.1006656664366403
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 105.9528333335038,
+              "files": 50000,
+              "first_frame_ms": 230.2870833336783,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 143753216,
+              "prepare_to_frame_ms": 53.61991666723043,
+              "scan_ms": 45.59075,
+              "selection_ms": 14.94195833311096,
+              "selection_on_main": 0,
+              "json_ms": 8.427417,
+              "detection_and_handoff_ms": 1.7542079998331133
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 104.37279166671942,
+              "files": 50000,
+              "first_frame_ms": 220.50179166672024,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 145145856,
+              "prepare_to_frame_ms": 47.14820833305566,
+              "scan_ms": 43.191083,
+              "selection_ms": 14.933791667317564,
+              "selection_on_main": 0,
+              "json_ms": 8.495458,
+              "detection_and_handoff_ms": 2.3604589996276104
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 104.93100000076083,
+              "files": 50000,
+              "first_frame_ms": 218.47933333356195,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 145653760,
+              "prepare_to_frame_ms": 45.00875000030646,
+              "scan_ms": 42.376875,
+              "selection_ms": 14.629541667090962,
+              "selection_on_main": 0,
+              "json_ms": 9.302959,
+              "detection_and_handoff_ms": 2.230207665403725
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 105.77229166665347,
+              "files": 50000,
+              "first_frame_ms": 215.62958333288407,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 145702912,
+              "prepare_to_frame_ms": 50.147875000220665,
+              "scan_ms": 36.451917,
+              "selection_ms": 14.952666666431469,
+              "selection_on_main": 0,
+              "json_ms": 7.262084000000001,
+              "detection_and_handoff_ms": 1.042748999578464
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 103.6567916671629,
+              "files": 50000,
+              "first_frame_ms": 222.9162499997983,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 144277504,
+              "prepare_to_frame_ms": 49.51241666731221,
+              "scan_ms": 43.629834,
+              "selection_ms": 15.031208333311952,
+              "selection_on_main": 0,
+              "json_ms": 8.763375,
+              "detection_and_handoff_ms": 2.3226243320112303
+            }
+          ],
+          "after": [
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 104.86237500026618,
+              "files": 50000,
+              "first_frame_ms": 220.16929166693444,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 137297920,
+              "prepare_to_frame_ms": 47.66929166726186,
+              "scan_ms": 41.730458,
+              "selection_ms": 15.220208332721086,
+              "selection_on_main": 0,
+              "json_ms": 8.82975,
+              "detection_and_handoff_ms": 1.8572086666853238
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 102.38720833331172,
+              "files": 50000,
+              "first_frame_ms": 217.32604166663805,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 136200192,
+              "prepare_to_frame_ms": 46.7919583325056,
+              "scan_ms": 42.762834,
+              "selection_ms": 15.081458333042974,
+              "selection_on_main": 0,
+              "json_ms": 8.165792,
+              "detection_and_handoff_ms": 2.1367906677777455
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 102.0751249998284,
+              "files": 50000,
+              "first_frame_ms": 212.55974999985483,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 134938624,
+              "prepare_to_frame_ms": 45.74120833331108,
+              "scan_ms": 39.968833000000004,
+              "selection_ms": 14.889250000123866,
+              "selection_on_main": 0,
+              "json_ms": 8.15425,
+              "detection_and_handoff_ms": 1.7310836665914735
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 105.3801250000106,
+              "files": 50000,
+              "first_frame_ms": 220.6012083333917,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 138493952,
+              "prepare_to_frame_ms": 48.13850000027742,
+              "scan_ms": 41.70825,
+              "selection_ms": 14.82058333385794,
+              "selection_on_main": 0,
+              "json_ms": 8.420917,
+              "detection_and_handoff_ms": 2.1328329992457498
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 103.16816666636441,
+              "files": 50000,
+              "first_frame_ms": 216.87079166713374,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 134955008,
+              "prepare_to_frame_ms": 46.696375000465196,
+              "scan_ms": 41.246375,
+              "selection_ms": 15.004000000772066,
+              "selection_on_main": 0,
+              "json_ms": 8.285083,
+              "detection_and_handoff_ms": 2.470791999532082
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 101.71549999995477,
+              "files": 50000,
+              "first_frame_ms": 214.7238749994358,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 136396800,
+              "prepare_to_frame_ms": 45.17316666624538,
+              "scan_ms": 43.456583,
+              "selection_ms": 14.898666667249927,
+              "selection_on_main": 0,
+              "json_ms": 7.884208,
+              "detection_and_handoff_ms": 1.5957506659857188
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 104.07295833374519,
+              "files": 50000,
+              "first_frame_ms": 220.65550000024814,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 135970816,
+              "prepare_to_frame_ms": 48.714374999690335,
+              "scan_ms": 42.502125,
+              "selection_ms": 15.113374999600637,
+              "selection_on_main": 0,
+              "json_ms": 8.292458000000002,
+              "detection_and_handoff_ms": 1.9602086672119583
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 103.81741666697053,
+              "files": 50000,
+              "first_frame_ms": 216.10254166625964,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 137920512,
+              "prepare_to_frame_ms": 45.045083333207,
+              "scan_ms": 42.800167,
+              "selection_ms": 14.598291666516161,
+              "selection_on_main": 0,
+              "json_ms": 8.150791,
+              "detection_and_handoff_ms": 1.6907919995659597
+            }
+          ]
+        },
+        "summary": {
+          "before": {
+            "median": {
+              "allocated_bytes": 204800000.0,
+              "decode_ms": 104.65189583374013,
+              "files": 50000.0,
+              "first_frame_ms": 220.0776458330438,
+              "logical_bytes": 50000.0,
+              "peak_rss_bytes": 144384000.0,
+              "prepare_to_frame_ms": 48.93785416697938,
+              "scan_ms": 43.312,
+              "selection_ms": 14.949333332879178,
+              "selection_on_main": 0.0,
+              "json_ms": 8.586375,
+              "detection_and_handoff_ms": 1.9582699992266868
+            },
+            "p95_first_frame_ms": 238.1899166666699,
+            "max_peak_rss_bytes": 145702912
+          },
+          "after": {
+            "median": {
+              "allocated_bytes": 204800000.0,
+              "decode_ms": 103.49279166666747,
+              "files": 50000.0,
+              "first_frame_ms": 217.0984166668859,
+              "logical_bytes": 50000.0,
+              "peak_rss_bytes": 136298496.0,
+              "prepare_to_frame_ms": 46.7441666664854,
+              "scan_ms": 42.1162915,
+              "selection_ms": 14.951333334010997,
+              "selection_on_main": 0.0,
+              "json_ms": 8.2254375,
+              "detection_and_handoff_ms": 1.908708666948641
+            },
+            "p95_first_frame_ms": 220.65550000024814,
+            "max_peak_rss_bytes": 138493952
+          }
+        }
+      },
+      "nested-50000": {
+        "first_run": {
+          "after": {
+            "allocated_bytes": 204800000,
+            "decode_ms": 104.96045833406242,
+            "files": 50000,
+            "first_frame_ms": 211.1749999994572,
+            "logical_bytes": 50000,
+            "peak_rss_bytes": 160940032,
+            "prepare_to_frame_ms": 48.94445833269856,
+            "scan_ms": 47.443332999999996,
+            "selection_ms": 0.02525000036257552,
+            "selection_on_main": 0,
+            "json_ms": 8.07425,
+            "detection_and_handoff_ms": 1.7272503323336537
+          },
+          "before": {
+            "allocated_bytes": 204800000,
+            "decode_ms": 104.28370833324152,
+            "files": 50000,
+            "first_frame_ms": 212.77850000024046,
+            "logical_bytes": 50000,
+            "peak_rss_bytes": 169132032,
+            "prepare_to_frame_ms": 50.44370833365974,
+            "scan_ms": 47.386209,
+            "selection_ms": 0.02658333414728986,
+            "selection_on_main": 0,
+            "json_ms": 8.777541999999999,
+            "detection_and_handoff_ms": 1.860748999191884
+          }
+        },
+        "samples": {
+          "before": [
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 108.57800000030693,
+              "files": 50000,
+              "first_frame_ms": 206.92779166620312,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 168755200,
+              "prepare_to_frame_ms": 44.65066666671191,
+              "scan_ms": 42.780499999999996,
+              "selection_ms": 0.021625000044878107,
+              "selection_on_main": 0,
+              "json_ms": 8.794291,
+              "detection_and_handoff_ms": 2.1027089991394234
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 105.2884583332343,
+              "files": 50000,
+              "first_frame_ms": 208.45341666699824,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 169164800,
+              "prepare_to_frame_ms": 46.643291666441655,
+              "scan_ms": 45.679375,
+              "selection_ms": 0.01983333277166821,
+              "selection_on_main": 0,
+              "json_ms": 8.874500000000001,
+              "detection_and_handoff_ms": 1.9479583345506057
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 108.36533333349507,
+              "files": 50000,
+              "first_frame_ms": 210.5357083328272,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 168837120,
+              "prepare_to_frame_ms": 50.138458333094604,
+              "scan_ms": 42.32075,
+              "selection_ms": 0.031333333026850596,
+              "selection_on_main": 0,
+              "json_ms": 8.131915999999999,
+              "detection_and_handoff_ms": 1.5479173332106768
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 102.92729166667414,
+              "files": 50000,
+              "first_frame_ms": 204.60649999949965,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 170409984,
+              "prepare_to_frame_ms": 45.08104166598059,
+              "scan_ms": 45.340540999999995,
+              "selection_ms": 0.02458333347021835,
+              "selection_on_main": 0,
+              "json_ms": 9.032375,
+              "detection_and_handoff_ms": 2.200667333374696
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 103.04687499956344,
+              "files": 50000,
+              "first_frame_ms": 199.66345833381638,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 168902656,
+              "prepare_to_frame_ms": 45.724416667326295,
+              "scan_ms": 40.621916,
+              "selection_ms": 0.023333333956543356,
+              "selection_on_main": 0,
+              "json_ms": 8.638333,
+              "detection_and_handoff_ms": 1.6085843329701106
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 105.89720833377214,
+              "files": 50000,
+              "first_frame_ms": 205.8258333336198,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 168886272,
+              "prepare_to_frame_ms": 47.81791666664503,
+              "scan_ms": 42.772584,
+              "selection_ms": 0.02312499964318704,
+              "selection_on_main": 0,
+              "json_ms": 7.864041,
+              "detection_and_handoff_ms": 1.4509583335594698
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 107.86845833354164,
+              "files": 50000,
+              "first_frame_ms": 211.47825000025477,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 169590784,
+              "prepare_to_frame_ms": 49.44120833351917,
+              "scan_ms": 43.144124999999995,
+              "selection_ms": 0.024416666747129057,
+              "selection_on_main": 0,
+              "json_ms": 8.748125,
+              "detection_and_handoff_ms": 2.2519166664468457
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 102.68925000036688,
+              "files": 50000,
+              "first_frame_ms": 202.5007916663526,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 169050112,
+              "prepare_to_frame_ms": 46.1239583328279,
+              "scan_ms": 43.551917,
+              "selection_ms": 0.021958333491056692,
+              "selection_on_main": 0,
+              "json_ms": 8.401041999999999,
+              "detection_and_handoff_ms": 1.7126659996667684
+            }
+          ],
+          "after": [
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 105.25737500029209,
+              "files": 50000,
+              "first_frame_ms": 205.0962499997695,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 160579584,
+              "prepare_to_frame_ms": 45.61087500042049,
+              "scan_ms": 44.464458,
+              "selection_ms": 0.024500000108673703,
+              "selection_on_main": 0,
+              "json_ms": 8.019874999999999,
+              "detection_and_handoff_ms": 1.7191669989482534
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 104.65583333370887,
+              "files": 50000,
+              "first_frame_ms": 199.08958333326154,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 160530432,
+              "prepare_to_frame_ms": 44.79079166685551,
+              "scan_ms": 40.270541,
+              "selection_ms": 0.025333333724120166,
+              "selection_on_main": 0,
+              "json_ms": 8.074167000000001,
+              "detection_and_handoff_ms": 1.272916998973045
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 105.2230833329304,
+              "files": 50000,
+              "first_frame_ms": 214.85850000044593,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 161447936,
+              "prepare_to_frame_ms": 49.60591666713299,
+              "scan_ms": 50.413332999999994,
+              "selection_ms": 0.02779166698019253,
+              "selection_on_main": 0,
+              "json_ms": 8.045,
+              "detection_and_handoff_ms": 1.5433753334023663
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 106.11004166639759,
+              "files": 50000,
+              "first_frame_ms": 204.46783333318308,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 160645120,
+              "prepare_to_frame_ms": 45.284708333383605,
+              "scan_ms": 42.423834,
+              "selection_ms": 0.0217916667679674,
+              "selection_on_main": 0,
+              "json_ms": 8.127167,
+              "detection_and_handoff_ms": 2.50029066663393
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 104.90491666678281,
+              "files": 50000,
+              "first_frame_ms": 206.029375000071,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 160464896,
+              "prepare_to_frame_ms": 47.94445833340433,
+              "scan_ms": 43.42075,
+              "selection_ms": 0.02129166659869952,
+              "selection_on_main": 0,
+              "json_ms": 8.084833,
+              "detection_and_handoff_ms": 1.6531253332851747
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 106.36116666682938,
+              "files": 50000,
+              "first_frame_ms": 203.05662499958999,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 161218560,
+              "prepare_to_frame_ms": 44.566833333192335,
+              "scan_ms": 41.654375,
+              "selection_ms": 0.023708334083494265,
+              "selection_on_main": 0,
+              "json_ms": 8.335959,
+              "detection_and_handoff_ms": 2.114582665484761
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 104.95666666611214,
+              "files": 50000,
+              "first_frame_ms": 205.96754166581377,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 161267712,
+              "prepare_to_frame_ms": 46.64062499978172,
+              "scan_ms": 43.990333,
+              "selection_ms": 0.02258333370264154,
+              "selection_on_main": 0,
+              "json_ms": 8.435792,
+              "detection_and_handoff_ms": 1.92154166621728
+            },
+            {
+              "allocated_bytes": 204800000,
+              "decode_ms": 104.07979166666337,
+              "files": 50000,
+              "first_frame_ms": 203.51504166683299,
+              "logical_bytes": 50000,
+              "peak_rss_bytes": 160546816,
+              "prepare_to_frame_ms": 45.04724999969767,
+              "scan_ms": 44.711625,
+              "selection_ms": 0.02541666617617011,
+              "selection_on_main": 0,
+              "json_ms": 8.099416999999999,
+              "detection_and_handoff_ms": 1.5515413342957913
+            }
+          ]
+        },
+        "summary": {
+          "before": {
+            "median": {
+              "allocated_bytes": 204800000.0,
+              "decode_ms": 105.59283333350322,
+              "files": 50000.0,
+              "first_frame_ms": 206.37681249991147,
+              "logical_bytes": 50000.0,
+              "peak_rss_bytes": 168976384.0,
+              "prepare_to_frame_ms": 46.383624999634776,
+              "scan_ms": 42.962312499999996,
+              "selection_ms": 0.023229166799865197,
+              "selection_on_main": 0.0,
+              "json_ms": 8.693228999999999,
+              "detection_and_handoff_ms": 1.830312167108687
+            },
+            "p95_first_frame_ms": 211.47825000025477,
+            "max_peak_rss_bytes": 170409984
+          },
+          "after": {
+            "median": {
+              "allocated_bytes": 204800000.0,
+              "decode_ms": 105.08987499952127,
+              "files": 50000.0,
+              "first_frame_ms": 204.7820416664763,
+              "logical_bytes": 50000.0,
+              "peak_rss_bytes": 160612352.0,
+              "prepare_to_frame_ms": 45.44779166690205,
+              "scan_ms": 43.705541499999995,
+              "selection_ms": 0.024104167096083984,
+              "selection_on_main": 0.0,
+              "json_ms": 8.092125,
+              "detection_and_handoff_ms": 1.686146166116714
+            },
+            "p95_first_frame_ms": 214.85850000044593,
+            "max_peak_rss_bytes": 161447936
+          }
+        }
+      }
+    }
+  },
+  "search": {
+    "measured_runs": 8,
+    "measurement": "Search setter on MainActor; results-ready includes debounce and up to one polling interval (1 ms requested). Synthetic names; fresh process per sample, first pair separate.",
+    "cases": {
+      "10000": {
+        "first_run": {
+          "before": [
+            {
+              "input_main_thread_ms": 10.772791666568082,
+              "matches": 10000,
+              "query": "file-0",
+              "results_ready_ms": 10.776458333566552
+            },
+            {
+              "input_main_thread_ms": 8.563791667256737,
+              "matches": 1,
+              "query": "9999",
+              "results_ready_ms": 8.566875000724394
+            },
+            {
+              "input_main_thread_ms": 8.77200000013545,
+              "matches": 0,
+              "query": "no-match",
+              "results_ready_ms": 8.772666667027806
+            }
+          ],
+          "after": [
+            {
+              "input_main_thread_ms": 0.019750000319618266,
+              "matches": 10000,
+              "query": "file-0",
+              "results_ready_ms": 140.8243333335122
+            },
+            {
+              "input_main_thread_ms": 0.021083333194837905,
+              "matches": 1,
+              "query": "9999",
+              "results_ready_ms": 140.1505833327974
+            },
+            {
+              "input_main_thread_ms": 0.02541666617617011,
+              "matches": 0,
+              "query": "no-match",
+              "results_ready_ms": 140.38108333352284
+            }
+          ]
+        },
+        "samples": {
+          "before": [
+            [
+              {
+                "input_main_thread_ms": 10.844208333764982,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 10.845291666555568
+              },
+              {
+                "input_main_thread_ms": 8.200416667023092,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 8.200458333703864
+              },
+              {
+                "input_main_thread_ms": 8.103958333776973,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 8.104000000457745
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 10.987833333274466,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 10.988916666974546
+              },
+              {
+                "input_main_thread_ms": 8.262624999588297,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 8.262749999630614
+              },
+              {
+                "input_main_thread_ms": 8.220458333198621,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 8.220499999879394
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 10.916083332631388,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 10.917416666416102
+              },
+              {
+                "input_main_thread_ms": 8.234875000198372,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 8.235500000409957
+              },
+              {
+                "input_main_thread_ms": 8.159416665876051,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 8.159458332556824
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 10.732333334090072,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 10.733791667007608
+              },
+              {
+                "input_main_thread_ms": 8.020083333576622,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 8.020541666155623
+              },
+              {
+                "input_main_thread_ms": 8.129916666803183,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 8.1300416668455
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 11.141958333610091,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 11.14470833363157
+              },
+              {
+                "input_main_thread_ms": 8.20245833347144,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 8.20262500019453
+              },
+              {
+                "input_main_thread_ms": 8.699291666744102,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 8.702625000296393
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 11.310541666716745,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 11.313250000057451
+              },
+              {
+                "input_main_thread_ms": 8.328124999934516,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 8.334916667081416
+              },
+              {
+                "input_main_thread_ms": 8.521124999788299,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 8.523041667103826
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 11.245874999985972,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 11.247958333115093
+              },
+              {
+                "input_main_thread_ms": 8.438041666522622,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 8.438416666649573
+              },
+              {
+                "input_main_thread_ms": 8.222250000471831,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 8.222291667152604
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 10.843583333553397,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 10.845625000001746
+              },
+              {
+                "input_main_thread_ms": 8.04375000006985,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 8.044041666835255
+              },
+              {
+                "input_main_thread_ms": 8.379333333323302,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 8.379375000004075
+              }
+            ]
+          ],
+          "after": [
+            [
+              {
+                "input_main_thread_ms": 0.017333333744318224,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 140.2068750003309
+              },
+              {
+                "input_main_thread_ms": 0.016791666894278023,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 141.97979166692676
+              },
+              {
+                "input_main_thread_ms": 0.01904166583699407,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 141.7265000000043
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.011958332834183238,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 138.58004166650062
+              },
+              {
+                "input_main_thread_ms": 0.01979166700039059,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 139.57475000006525
+              },
+              {
+                "input_main_thread_ms": 0.020166667127341498,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 137.7061250004772
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.018458333215676248,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 138.90158333288127
+              },
+              {
+                "input_main_thread_ms": 0.02033333294093609,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 141.16095833378495
+              },
+              {
+                "input_main_thread_ms": 0.014500000361294951,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 140.91091666705324
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.012291667189856526,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 138.48716666689143
+              },
+              {
+                "input_main_thread_ms": 0.01650000012887176,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 141.42399999946065
+              },
+              {
+                "input_main_thread_ms": 0.029041667403362226,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 141.87333333393326
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.020250000488886144,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 140.40133333401172
+              },
+              {
+                "input_main_thread_ms": 0.027750000299420208,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 138.74833333375136
+              },
+              {
+                "input_main_thread_ms": 0.05620833326247521,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 140.45070833253703
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.022833333787275478,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 137.09370833385037
+              },
+              {
+                "input_main_thread_ms": 0.019041666746488772,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 132.31945833376813
+              },
+              {
+                "input_main_thread_ms": 0.020666666387114674,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 131.05754166645056
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.01712500034045661,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 137.64733333391632
+              },
+              {
+                "input_main_thread_ms": 0.01929166683112271,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 140.61612500063347
+              },
+              {
+                "input_main_thread_ms": 0.020541667254292406,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 136.40399999985675
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.017083332750189584,
+                "matches": 10000,
+                "query": "file-0",
+                "results_ready_ms": 137.99183333321707
+              },
+              {
+                "input_main_thread_ms": 0.019083333427261095,
+                "matches": 1,
+                "query": "9999",
+                "results_ready_ms": 140.55558333348017
+              },
+              {
+                "input_main_thread_ms": 0.03166666647302918,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 139.36874999944848
+              }
+            ]
+          ]
+        },
+        "summary": {
+          "before": [
+            {
+              "query": "file-0",
+              "matches": 10000,
+              "input_main_thread_ms": {
+                "median": 10.951958332952927,
+                "max": 11.310541666716745
+              },
+              "results_ready_ms": {
+                "median": 10.953166666695324,
+                "max": 11.313250000057451
+              }
+            },
+            {
+              "query": "9999",
+              "matches": 1,
+              "input_main_thread_ms": {
+                "median": 8.218666666834906,
+                "max": 8.438041666522622
+              },
+              "results_ready_ms": {
+                "median": 8.219062500302243,
+                "max": 8.438416666649573
+              }
+            },
+            {
+              "query": "no-match",
+              "matches": 0,
+              "input_main_thread_ms": {
+                "median": 8.221354166835226,
+                "max": 8.699291666744102
+              },
+              "results_ready_ms": {
+                "median": 8.221395833515999,
+                "max": 8.702625000296393
+              }
+            }
+          ],
+          "after": [
+            {
+              "query": "file-0",
+              "matches": 10000,
+              "input_main_thread_ms": {
+                "median": 0.017229167042387417,
+                "max": 0.022833333787275478
+              },
+              "results_ready_ms": {
+                "median": 138.53360416669602,
+                "max": 140.40133333401172
+              }
+            },
+            {
+              "query": "9999",
+              "matches": 1,
+              "input_main_thread_ms": {
+                "median": 0.019187500129191903,
+                "max": 0.027750000299420208
+              },
+              "results_ready_ms": {
+                "median": 140.58585416705682,
+                "max": 141.97979166692676
+              }
+            },
+            {
+              "query": "no-match",
+              "matches": 0,
+              "input_main_thread_ms": {
+                "median": 0.02060416682070354,
+                "max": 0.05620833326247521
+              },
+              "results_ready_ms": {
+                "median": 139.90972916599276,
+                "max": 141.87333333393326
+              }
+            }
+          ]
+        }
+      },
+      "50000": {
+        "first_run": {
+          "before": [
+            {
+              "input_main_thread_ms": 49.47266666658834,
+              "matches": 50000,
+              "query": "file-0",
+              "results_ready_ms": 49.47470833303669
+            },
+            {
+              "input_main_thread_ms": 41.828999999779626,
+              "matches": 5,
+              "query": "9999",
+              "results_ready_ms": 41.83045833360666
+            },
+            {
+              "input_main_thread_ms": 40.57216666660679,
+              "matches": 0,
+              "query": "no-match",
+              "results_ready_ms": 40.57391666628973
+            }
+          ],
+          "after": [
+            {
+              "input_main_thread_ms": 0.024541666789446026,
+              "matches": 50000,
+              "query": "file-0",
+              "results_ready_ms": 184.36983333322132
+            },
+            {
+              "input_main_thread_ms": 0.023833333216316532,
+              "matches": 5,
+              "query": "9999",
+              "results_ready_ms": 172.89491666633694
+            },
+            {
+              "input_main_thread_ms": 0.030500000320898835,
+              "matches": 0,
+              "query": "no-match",
+              "results_ready_ms": 176.70029166674794
+            }
+          ]
+        },
+        "samples": {
+          "before": [
+            [
+              {
+                "input_main_thread_ms": 50.76587500025198,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 50.76774999997724
+              },
+              {
+                "input_main_thread_ms": 41.163458333357994,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 41.16404166597931
+              },
+              {
+                "input_main_thread_ms": 41.728999999577354,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 41.72924999966199
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 49.511291666931356,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 49.51337500006048
+              },
+              {
+                "input_main_thread_ms": 40.01775000051566,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 40.01829166645621
+              },
+              {
+                "input_main_thread_ms": 40.8674999998766,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 40.86908333283645
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 50.10629166645231,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 50.1084166662622
+              },
+              {
+                "input_main_thread_ms": 40.24795833265671,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 40.24858333286829
+              },
+              {
+                "input_main_thread_ms": 40.36379166700499,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 40.36424999958399
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 50.054541667122976,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 50.056416666848236
+              },
+              {
+                "input_main_thread_ms": 40.32358333370212,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 40.32362500038289
+              },
+              {
+                "input_main_thread_ms": 41.02858333317272,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 41.0289166666189
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 49.22212499968737,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 49.2240416660934
+              },
+              {
+                "input_main_thread_ms": 40.38587499962887,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 40.386166666394274
+              },
+              {
+                "input_main_thread_ms": 40.92733333345677,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 40.92791666607809
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 49.415208332902694,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 49.4170000001759
+              },
+              {
+                "input_main_thread_ms": 40.02466666679538,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 40.02516666696465
+              },
+              {
+                "input_main_thread_ms": 40.71129166641185,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 40.71174999990035
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 49.72008333334088,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 49.72166666721023
+              },
+              {
+                "input_main_thread_ms": 40.248249999422114,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 40.24870833291061
+              },
+              {
+                "input_main_thread_ms": 40.734250000241445,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 40.73445833364531
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 49.4312083328623,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 49.433291666900914
+              },
+              {
+                "input_main_thread_ms": 40.14066666695726,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 40.14125000048807
+              },
+              {
+                "input_main_thread_ms": 40.44104166678153,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 40.4415416669508
+              }
+            ]
+          ],
+          "after": [
+            [
+              {
+                "input_main_thread_ms": 0.035708333598449826,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 187.21149999964837
+              },
+              {
+                "input_main_thread_ms": 0.014583332813344896,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 172.27524999998423
+              },
+              {
+                "input_main_thread_ms": 0.02366666649322724,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 173.551958333519
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.02312499964318704,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 184.6401250004419
+              },
+              {
+                "input_main_thread_ms": 0.02049999966402538,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 173.7499166665657
+              },
+              {
+                "input_main_thread_ms": 0.028500000553322025,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 172.85937500037107
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.02750000021478627,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 184.05016666656593
+              },
+              {
+                "input_main_thread_ms": 0.0223333336180076,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 174.62691666696628
+              },
+              {
+                "input_main_thread_ms": 0.023708333173999563,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 173.58741666612332
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.024791666874079965,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 172.87854166715988
+              },
+              {
+                "input_main_thread_ms": 0.017499999557912815,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 174.4929583328485
+              },
+              {
+                "input_main_thread_ms": 0.012416666322678793,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 173.85291666687408
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.02245833366032457,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 180.81658333358064
+              },
+              {
+                "input_main_thread_ms": 0.033458332836744376,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 176.09045833341952
+              },
+              {
+                "input_main_thread_ms": 0.023624999812454917,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 176.3986666665005
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.026041666387754958,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 183.65691666622297
+              },
+              {
+                "input_main_thread_ms": 0.024750000193307642,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 174.1723750001256
+              },
+              {
+                "input_main_thread_ms": 0.01808333308872534,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 176.87058333376626
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.019916666133212857,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 185.09804166660615
+              },
+              {
+                "input_main_thread_ms": 0.02966666670545237,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 176.1299166664685
+              },
+              {
+                "input_main_thread_ms": 0.01570833319419762,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 175.61566666699946
+              }
+            ],
+            [
+              {
+                "input_main_thread_ms": 0.0234166664085933,
+                "matches": 50000,
+                "query": "file-0",
+                "results_ready_ms": 182.43766666637384
+              },
+              {
+                "input_main_thread_ms": 0.015333333067246713,
+                "matches": 5,
+                "query": "9999",
+                "results_ready_ms": 174.81250000037107
+              },
+              {
+                "input_main_thread_ms": 0.024958332687674556,
+                "matches": 0,
+                "query": "no-match",
+                "results_ready_ms": 175.7798749995345
+              }
+            ]
+          ]
+        },
+        "summary": {
+          "before": [
+            {
+              "query": "file-0",
+              "matches": 50000,
+              "input_main_thread_ms": {
+                "median": 49.61568750013612,
+                "max": 50.76587500025198
+              },
+              "results_ready_ms": {
+                "median": 49.61752083363535,
+                "max": 50.76774999997724
+              }
+            },
+            {
+              "query": "9999",
+              "matches": 5,
+              "input_main_thread_ms": {
+                "median": 40.24810416603941,
+                "max": 41.163458333357994
+              },
+              "results_ready_ms": {
+                "median": 40.24864583288945,
+                "max": 41.16404166597931
+              }
+            },
+            {
+              "query": "no-match",
+              "matches": 0,
+              "input_main_thread_ms": {
+                "median": 40.80087500005902,
+                "max": 41.728999999577354
+              },
+              "results_ready_ms": {
+                "median": 40.80177083324088,
+                "max": 41.72924999966199
+              }
+            }
+          ],
+          "after": [
+            {
+              "query": "file-0",
+              "matches": 50000,
+              "input_main_thread_ms": {
+                "median": 0.024104166641336633,
+                "max": 0.035708333598449826
+              },
+              "results_ready_ms": {
+                "median": 183.85354166639445,
+                "max": 187.21149999964837
+              }
+            },
+            {
+              "query": "9999",
+              "matches": 5,
+              "input_main_thread_ms": {
+                "median": 0.02141666664101649,
+                "max": 0.033458332836744376
+              },
+              "results_ready_ms": {
+                "median": 174.5599374999074,
+                "max": 176.1299166664685
+              }
+            },
+            {
+              "query": "no-match",
+              "matches": 0,
+              "input_main_thread_ms": {
+                "median": 0.023645833152841078,
+                "max": 0.028500000553322025
+              },
+              "results_ready_ms": {
+                "median": 174.73429166693677,
+                "max": 176.87058333376626
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -7,3 +7,4 @@ cargo test --manifest-path rust/Cargo.toml
 cargo build --release --manifest-path rust/Cargo.toml
 swift test
 python3 scripts/verify_scanner.py
+python3 scripts/verify_model.py

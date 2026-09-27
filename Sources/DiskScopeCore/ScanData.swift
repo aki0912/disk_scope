@@ -111,6 +111,12 @@ public struct ScanSnapshot: Sendable {
     /// Select only the visible leaders. The heap root is the worst retained item.
     /// Unshown items still contribute to counts and bytes for the treemap remainder.
     public func largestChildren(of id: Int, metric: SizeMetric, limit: Int, matching query: String = "") -> ChildSelection {
+        return largestChildren(of: id, metric: metric, limit: limit, matching: query, checkCancellation: {})
+    }
+
+    /// Check at bounded intervals, including nonmatching items, so superseded searches stop promptly.
+    public func largestChildren(of id: Int, metric: SizeMetric, limit: Int, matching query: String,
+                                checkCancellation: () throws -> Void) rethrows -> ChildSelection {
         let capacity = max(0, limit)
         var heap: [Int] = []
         heap.reserveCapacity(min(capacity, children[id].count))
@@ -122,7 +128,8 @@ public struct ScanSnapshot: Sendable {
             let order = a.name.localizedStandardCompare(b.name)
             return order == .orderedSame ? left < right : order == .orderedAscending
         }
-        for child in children[id] {
+        for (offset, child) in children[id].enumerated() {
+            if offset.isMultiple(of: 256) { try checkCancellation() }
             let node = nodes[child]
             if !query.isEmpty && !node.name.localizedCaseInsensitiveContains(query) { continue }
             count += 1
@@ -150,7 +157,9 @@ public struct ScanSnapshot: Sendable {
                 }
             }
         }
-        return ChildSelection(ids: heap.sorted(by: precedes), count: count, nonzeroCount: nonzeroCount, bytes: bytes)
+        let ids = heap.sorted(by: precedes)
+        try checkCancellation()
+        return ChildSelection(ids: ids, count: count, nonzeroCount: nonzeroCount, bytes: bytes)
     }
 
 }

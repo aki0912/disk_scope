@@ -62,6 +62,15 @@ final class CoreTests: XCTestCase {
         }
         let payload: [String: Any] = ["rootPath": "/fixture", "elapsed": 0, "fileCount": count, "directoryCount": 1, "issueCount": 0, "excludedCount": 0, "duplicateCount": 0, "issues": [], "nodes": records]
         let snapshot = try ScanSnapshot(data: JSONSerialization.data(withJSONObject: payload))
+        for query in ["file", "no-match"] {
+            var checks = 0
+            XCTAssertThrowsError(try snapshot.largestChildren(of: 0, metric: .allocated, limit: 300,
+                                                              matching: query, checkCancellation: {
+                checks += 1
+                if checks == 2 { throw CancellationError() }
+            })) { XCTAssertTrue($0 is CancellationError) }
+            XCTAssertEqual(checks, 2, "Cancellation must run even when nothing matches")
+        }
         for metric in SizeMetric.allCases {
             for query in ["", "file-1", "FILE-20", "no-match"] {
                 let matching = snapshot.children[0].filter { query.isEmpty || snapshot.nodes[$0].name.localizedCaseInsensitiveContains(query) }

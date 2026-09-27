@@ -247,7 +247,7 @@ struct ContentView: View {
                         ForEach(matches.prefix(300), id: \.self) { id in
                             fileRow(snapshot.nodes[id])
                         }
-                        if matches.isEmpty { Text(model.search.isEmpty ? "この階層には項目がありません" : "一致する項目がありません").font(.system(size: 11)).foregroundStyle(Theme.muted).padding(20) }
+                        if matches.isEmpty { Text(model.searching ? "検索中…" : (model.search.isEmpty ? "この階層には項目がありません" : "一致する項目がありません")).font(.system(size: 11)).foregroundStyle(Theme.muted).padding(20) }
                         if model.filteredSelection.count > 300 { Text("上位300件を表示しています。名前で検索すると残りの項目も確認できます。")
                             .font(.system(size: 10)).foregroundStyle(Theme.muted).padding(10) }
                     }

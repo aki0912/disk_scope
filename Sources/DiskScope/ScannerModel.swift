@@ -37,8 +37,11 @@ enum ScannerBridge {
     static func result(_ id: UInt64) throws -> ScanSnapshot {
         defer { ds_scan_destroy(id) }
         guard let pointer = ds_scan_take_result(id) else { throw CocoaError(.fileReadUnknown) }
-        defer { ds_string_free(pointer) }
-        return try ScanSnapshot(data: Data(bytes: pointer, count: strlen(pointer)))
+        // Data owns the Rust allocation, including when decoding throws.
+        let data = Data(bytesNoCopy: pointer, count: strlen(pointer), deallocator: .custom { buffer, _ in
+            ds_string_free(buffer.assumingMemoryBound(to: CChar.self))
+        })
+        return try ScanSnapshot(data: data)
     }
 }
 
@@ -57,12 +60,17 @@ final class ScannerModel: ObservableObject {
     @Published var search = "" { didSet { refreshFilter() } }
     @Published var currentSelection = ChildSelection.empty
     @Published var filteredSelection = ChildSelection.empty
+    @Published private(set) var searching = false
     @Published var volumeTotal: UInt64 = 0
     @Published var volumeAvailable: UInt64 = 0
     @Published var recentRoots: [String] = UserDefaults.standard.stringArray(forKey: "recentRoots") ?? []
     private var scanID: UInt64 = 0
     private var generation = UUID()
     private var scanTask: Task<Void, Never>?
+    private var searchTask: Task<Void, Never>?
+    private var searchGeneration = UUID()
+
+    deinit { searchTask?.cancel() }
 
     var current: ScanNode? { snapshot.map { $0.nodes[currentID] } }
     var selected: ScanNode? { guard let id = selectedID else { return nil }; return snapshot?.nodes[id] }
@@ -170,6 +178,7 @@ final class ScannerModel: ObservableObject {
 
     func cancel(showNotice: Bool = true) {
         generation = UUID()
+        invalidateSearch()
         scanTask?.cancel(); scanTask = nil
         if scanID != 0 { ds_scan_cancel(scanID); ds_scan_destroy(scanID); scanID = 0 }
         if scanning && showNotice { notice = "解析をキャンセルしました。" }
@@ -181,9 +190,41 @@ final class ScannerModel: ObservableObject {
         refreshFilter()
     }
 
+    private func invalidateSearch() {
+        searchTask?.cancel()
+        searchTask = nil
+        searchGeneration = UUID()
+        searching = false
+    }
+
     private func refreshFilter() {
-        if search.isEmpty { filteredSelection = currentSelection }
-        else { filteredSelection = snapshot?.largestChildren(of: currentID, metric: metric, limit: 300, matching: search) ?? .empty }
+        invalidateSearch()
+        guard !search.isEmpty else { filteredSelection = currentSelection; return }
+        filteredSelection = .empty
+        guard let snapshot else { return }
+        searching = true
+        let token = searchGeneration
+        let query = search, id = currentID, selectedMetric = metric
+        searchTask = Task.detached(priority: .userInitiated) { [weak self] in
+            do {
+                try await Task.sleep(for: .milliseconds(120))
+                let selection = try snapshot.largestChildren(of: id, metric: selectedMetric, limit: 300,
+                                                             matching: query, checkCancellation: { try Task.checkCancellation() })
+                try Task.checkCancellation()
+                await self?.publishSearch(selection, token: token)
+            } catch is CancellationError {
+                // A newer query, navigation, or scan owns the visible selection now.
+            } catch {
+                assertionFailure("Unexpected search error: \(error)")
+            }
+        }
+    }
+
+    private func publishSearch(_ selection: ChildSelection, token: UUID) {
+        guard searchGeneration == token else { return }
+        filteredSelection = selection
+        searching = false
+        searchTask = nil
     }
 
     func navigate(_ id: Int) {

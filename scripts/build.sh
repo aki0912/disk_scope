@@ -11,4 +11,12 @@ cp "$bin_dir/DiskScope" "$app/Contents/MacOS/DiskScope"
 cp Info.plist "$app/Contents/Info.plist"
 cp build/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
 codesign --force --sign - "$app"
+# Notify Finder that the bundle and its icon metadata have changed.
+touch "$app"
+lsregister="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
+if [[ -x "$lsregister" ]]; then
+    if ! "$lsregister" -f "$PWD/$app"; then
+        echo "Warning: macOS app registration could not be refreshed." >&2
+    fi
+fi
 echo "Built build/DiskScope.app"

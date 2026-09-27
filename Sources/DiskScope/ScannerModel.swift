@@ -18,9 +18,26 @@ enum ScannerBridge {
         return try JSONDecoder().decode(type, from: Data(bytes: pointer, count: strlen(pointer)))
     }
 
+    static func waitForCompletion(_ id: UInt64) async throws -> ScanProgress {
+        // A blocking C wait belongs on a dispatch worker, not Swift's cooperative executor.
+        // Model cancellation destroys the job and wakes this worker immediately.
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    var status: Int32 = 0
+                    repeat { status = ds_scan_wait(id, 250) } while status == 0
+                    if status == 2 { throw CancellationError() }
+                    guard status != -1 else { throw CocoaError(.fileReadUnknown) }
+                    continuation.resume(returning: try read(ds_scan_poll(id), as: ScanProgress.self))
+                } catch { continuation.resume(throwing: error) }
+            }
+        }
+    }
+
     static func result(_ id: UInt64) throws -> ScanSnapshot {
+        defer { ds_scan_destroy(id) }
         guard let pointer = ds_scan_take_result(id) else { throw CocoaError(.fileReadUnknown) }
-        defer { ds_string_free(pointer); ds_scan_destroy(id) }
+        defer { ds_string_free(pointer) }
         return try ScanSnapshot(data: Data(bytes: pointer, count: strlen(pointer)))
     }
 }
@@ -85,35 +102,60 @@ final class ScannerModel: ObservableObject {
         scanID = id; scanning = true
         let token = UUID(); generation = token
         scanTask = Task { [weak self] in
-            do {
+            let progressTask = Task { @MainActor [weak self] in
                 while !Task.isCancelled {
-                    try await Task.sleep(for: .milliseconds(120))
-                    guard let self, self.generation == token else { return }
-                    let state = try ScannerBridge.read(ds_scan_poll(id), as: ScanProgress.self)
-                    self.progress = state
-                    switch state.status {
-                    case "complete":
-                        self.preparing = true
-                        self.scanID = 0
-                        let result = try await Task.detached(priority: .userInitiated) { try ScannerBridge.result(id) }.value
-                        guard self.generation == token, !Task.isCancelled else { return }
-                        self.snapshot = result
-                        self.scanning = false; self.preparing = false
-                        self.refreshChildren()
-                        self.recentRoots.removeAll { $0 == url.path }
-                        self.recentRoots.insert(url.path, at: 0)
-                        self.recentRoots = Array(self.recentRoots.prefix(5))
-                        UserDefaults.standard.set(self.recentRoots, forKey: "recentRoots")
-                        return
-                    case "failed":
-                        self.error = state.error ?? "解析できませんでした。"
-                        self.finish(id); return
-                    case "cancelled": self.finish(id); return
-                    default: break
+                    do { try await Task.sleep(for: .milliseconds(120)) }
+                    catch { return }
+                    guard let self, self.generation == token, self.scanID == id else { return }
+                    if let state = try? ScannerBridge.read(ds_scan_poll(id), as: ScanProgress.self) {
+                        self.progress = state
                     }
                 }
+            }
+            defer { progressTask.cancel() }
+            do {
+                let state = try await ScannerBridge.waitForCompletion(id)
+                guard let self, self.generation == token, !Task.isCancelled else { return }
+                progressTask.cancel()
+                self.progress = state
+                switch state.status {
+                case "complete":
+                    self.preparing = true
+                    self.scanID = 0
+                    var selectionMetric = self.metric
+                    let initialMetric = selectionMetric
+                    let prepared = try await Task.detached(priority: .userInitiated) {
+                        let snapshot = try ScannerBridge.result(id)
+                        let selection = snapshot.largestChildren(of: 0, metric: initialMetric, limit: 300)
+                        return (snapshot: snapshot, selection: selection)
+                    }.value
+                    guard self.generation == token, !Task.isCancelled else { return }
+                    var selection = prepared.selection
+                    // Keep the selection consistent even if the metric changes during preparation.
+                    while self.metric != selectionMetric {
+                        selectionMetric = self.metric
+                        let updatedMetric = selectionMetric
+                        selection = await Task.detached(priority: .userInitiated) {
+                            prepared.snapshot.largestChildren(of: 0, metric: updatedMetric, limit: 300)
+                        }.value
+                        guard self.generation == token, !Task.isCancelled else { return }
+                    }
+                    self.snapshot = prepared.snapshot
+                    self.currentSelection = selection
+                    self.refreshFilter()
+                    self.scanning = false; self.preparing = false
+                    self.recentRoots.removeAll { $0 == url.path }
+                    self.recentRoots.insert(url.path, at: 0)
+                    self.recentRoots = Array(self.recentRoots.prefix(5))
+                    UserDefaults.standard.set(self.recentRoots, forKey: "recentRoots")
+                case "failed":
+                    self.error = state.error ?? "解析できませんでした。"
+                    self.finish(id)
+                default: self.finish(id)
+                }
             } catch is CancellationError {
-                return
+                guard let self, self.generation == token else { return }
+                self.finish(id)
             } catch {
                 guard let self, self.generation == token else { return }
                 self.error = "解析結果を読み込めませんでした: \(error.localizedDescription)"

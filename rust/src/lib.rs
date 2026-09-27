@@ -6,7 +6,7 @@ use std::os::raw::c_char;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{mpsc, Arc, Mutex, OnceLock};
+use std::sync::{mpsc, Arc, Condvar, Mutex, OnceLock};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -17,6 +17,7 @@ struct Job {
     directories: AtomicU64,
     bytes: AtomicU64,
     state: Mutex<State>,
+    changed: Condvar,
 }
 
 #[derive(Default)]
@@ -74,21 +75,36 @@ fn job(id: u64) -> Option<Arc<Job>> {
     jobs().lock().unwrap().get(&id).cloned()
 }
 
-fn quote(value: &str) -> String {
-    let mut out = String::with_capacity(value.len() + 2);
+fn append_quoted(out: &mut String, value: &str) {
+    const HEX: &[u8; 16] = b"0123456789abcdef";
     out.push('"');
-    for c in value.chars() {
-        match c {
-            '"' => out.push_str("\\\""),
-            '\\' => out.push_str("\\\\"),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            c if c < ' ' => out.push_str(&format!("\\u{:04x}", c as u32)),
-            c => out.push(c),
+    let mut start = 0;
+    for (index, byte) in value.bytes().enumerate() {
+        if byte == b'"' || byte == b'\\' || byte < b' ' {
+            // Every escaped byte is ASCII, so these are UTF-8 boundaries.
+            out.push_str(&value[start..index]);
+            match byte {
+                b'"' => out.push_str("\\\""),
+                b'\\' => out.push_str("\\\\"),
+                b'\n' => out.push_str("\\n"),
+                b'\r' => out.push_str("\\r"),
+                b'\t' => out.push_str("\\t"),
+                _ => {
+                    out.push_str("\\u00");
+                    out.push(HEX[(byte >> 4) as usize] as char);
+                    out.push(HEX[(byte & 15) as usize] as char);
+                }
+            }
+            start = index + 1;
         }
     }
+    out.push_str(&value[start..]);
     out.push('"');
+}
+
+fn quote(value: &str) -> String {
+    let mut out = String::with_capacity(value.len() + 2);
+    append_quoted(&mut out, value);
     out
 }
 
@@ -134,6 +150,7 @@ pub unsafe extern "C" fn ds_scan_start(path: *const c_char) -> u64 {
                 }
             }
         }
+        job.changed.notify_all();
     });
     id
 }
@@ -154,6 +171,39 @@ pub extern "C" fn ds_scan_poll(id: u64) -> *mut c_char {
     ))
 }
 
+/// Wait for a terminal state without consuming the result. Safe alongside destroy:
+/// the waiter retains the job until it returns. Cancellation also wakes waiters.
+/// Returns -1: missing job, 0: timeout, 1: complete, 2: cancelled, 3: failed.
+#[no_mangle]
+pub extern "C" fn ds_scan_wait(id: u64, timeout_ms: u32) -> i32 {
+    let Some(job) = job(id) else { return -1 };
+    let state = job.state.lock().unwrap();
+    let (state, _) = job
+        .changed
+        .wait_timeout_while(
+            state,
+            Duration::from_millis(u64::from(timeout_ms)),
+            |state| state.status == "scanning" && !job.cancelled.load(Ordering::Relaxed),
+        )
+        .unwrap();
+    if job.cancelled.load(Ordering::Relaxed) {
+        return 2;
+    }
+    match state.status {
+        "complete" => 1,
+        "cancelled" => 2,
+        "failed" => 3,
+        _ => 0,
+    }
+}
+
+fn cancel_job(job: &Job) {
+    // Share the predicate mutex with waiters to avoid losing a wake-up.
+    let _state = job.state.lock().unwrap();
+    job.cancelled.store(true, Ordering::Relaxed);
+    job.changed.notify_all();
+}
+
 /// Transfers the completed result once, avoiding a second full JSON allocation.
 #[no_mangle]
 pub extern "C" fn ds_scan_take_result(id: u64) -> *mut c_char {
@@ -167,14 +217,15 @@ pub extern "C" fn ds_scan_take_result(id: u64) -> *mut c_char {
 #[no_mangle]
 pub extern "C" fn ds_scan_cancel(id: u64) {
     if let Some(job) = job(id) {
-        job.cancelled.store(true, Ordering::Relaxed);
+        cancel_job(&job);
     }
 }
 
 #[no_mangle]
 pub extern "C" fn ds_scan_destroy(id: u64) {
-    if let Some(job) = jobs().lock().unwrap().remove(&id) {
-        job.cancelled.store(true, Ordering::Relaxed);
+    let removed = jobs().lock().unwrap().remove(&id);
+    if let Some(job) = removed {
+        cancel_job(&job);
     }
 }
 
@@ -421,21 +472,32 @@ fn scan(root: &Path, job: &Arc<Job>) -> Result<String, String> {
             nodes[parent].allocated = nodes[parent].allocated.saturating_add(nodes[i].allocated);
         }
     }
-    let mut json = format!(
-        "{{\"rootPath\":{},\"elapsed\":{},\"fileCount\":{},\"directoryCount\":{},\"issueCount\":{},\"excludedCount\":{},\"duplicateCount\":{},\"nodes\":[",
-        quote(&root.to_string_lossy()), started.elapsed().as_secs_f64(),
-        job.files.load(Ordering::Relaxed), job.directories.load(Ordering::Relaxed),
-        issue_count, excluded_count, duplicate_count
-    );
     use std::fmt::Write;
+    let mut json = String::with_capacity(nodes.len().saturating_mul(180));
+    json.push_str("{\"rootPath\":");
+    append_quoted(&mut json, &root.to_string_lossy());
+    write!(&mut json,
+        ",\"elapsed\":{},\"fileCount\":{},\"directoryCount\":{},\"issueCount\":{},\"excludedCount\":{},\"duplicateCount\":{},\"nodes\":[",
+        started.elapsed().as_secs_f64(), job.files.load(Ordering::Relaxed),
+        job.directories.load(Ordering::Relaxed), issue_count, excluded_count, duplicate_count,
+    ).unwrap();
     for (id, node) in nodes.iter().enumerate() {
         if id > 0 {
             json.push(',');
         }
+        write!(&mut json, "{{\"id\":{},\"name\":", id).unwrap();
+        append_quoted(&mut json, &node.name);
+        json.push_str(",\"parent\":");
+        if let Some(parent) = node.parent {
+            write!(&mut json, "{parent}").unwrap();
+        } else {
+            json.push_str("null");
+        }
+        json.push_str(",\"kind\":");
+        append_quoted(&mut json, node.kind);
         write!(&mut json,
-            "{{\"id\":{},\"name\":{},\"parent\":{},\"kind\":{},\"logical\":{},\"allocated\":{},\"modified\":{},\"duplicate\":{},\"excluded\":{},\"unreadable\":{}}}",
-            id, quote(&node.name), node.parent.map(|p| p.to_string()).unwrap_or("null".into()),
-            quote(node.kind), node.logical, node.allocated, node.modified, node.duplicate, node.excluded, node.unreadable
+            ",\"logical\":{},\"allocated\":{},\"modified\":{},\"duplicate\":{},\"excluded\":{},\"unreadable\":{}}}",
+            node.logical, node.allocated, node.modified, node.duplicate, node.excluded, node.unreadable,
         ).unwrap();
     }
     json.push_str("],\"issues\":[");
@@ -443,13 +505,11 @@ fn scan(root: &Path, job: &Arc<Job>) -> Result<String, String> {
         if i > 0 {
             json.push(',');
         }
-        write!(
-            &mut json,
-            "{{\"path\":{},\"message\":{}}}",
-            quote(path),
-            quote(message)
-        )
-        .unwrap();
+        json.push_str("{\"path\":");
+        append_quoted(&mut json, path);
+        json.push_str(",\"message\":");
+        append_quoted(&mut json, message);
+        json.push('}');
     }
     json.push_str("]}");
     Ok(json)
@@ -567,6 +627,94 @@ mod tests {
         ds_scan_destroy(id);
         assert!(ds_scan_poll(id).is_null());
     }
+    fn waiting_job() -> (u64, Arc<Job>) {
+        let id = NEXT_ID.fetch_add(1, Ordering::Relaxed);
+        let state = Arc::new(Job::default());
+        state.state.lock().unwrap().status = "scanning";
+        jobs().lock().unwrap().insert(id, Arc::clone(&state));
+        (id, state)
+    }
+
+    #[test]
+    fn wait_observes_completion_before_and_during_wait() {
+        let f = Fixture::new();
+        let path = CString::new(f.0.to_str().unwrap()).unwrap();
+        let id = unsafe { ds_scan_start(path.as_ptr()) };
+        assert_eq!(ds_scan_wait(id, 5000), 1);
+        // Waiting again must neither miss the signal nor consume the result.
+        assert_eq!(ds_scan_wait(id, 0), 1);
+        let result = ds_scan_take_result(id);
+        assert!(!result.is_null());
+        unsafe { ds_string_free(result) };
+        ds_scan_destroy(id);
+        assert_eq!(ds_scan_wait(id, 0), -1);
+    }
+
+    #[test]
+    fn wait_times_out_and_reports_failure() {
+        let (id, state) = waiting_job();
+        assert_eq!(ds_scan_wait(id, 1), 0);
+        ds_scan_destroy(id);
+        drop(state);
+        let f = Fixture::new();
+        let path = CString::new(f.0.join("missing").to_str().unwrap()).unwrap();
+        let id = unsafe { ds_scan_start(path.as_ptr()) };
+        assert_eq!(ds_scan_wait(id, 5000), 3);
+        ds_scan_destroy(id);
+    }
+
+    #[test]
+    fn cancellation_and_destroy_wake_all_waiters() {
+        for destroy in [false, true] {
+            let (id, state) = waiting_job();
+            let (tx, rx) = mpsc::channel();
+            let handles: Vec<_> = (0..3)
+                .map(|_| {
+                    let tx = tx.clone();
+                    thread::spawn(move || tx.send(ds_scan_wait(id, 30_000)).unwrap())
+                })
+                .collect();
+            // Map + this test + all three waiters retain the job. No timing sleep.
+            let deadline = Instant::now() + Duration::from_secs(5);
+            while Arc::strong_count(&state) < 5 {
+                assert!(Instant::now() < deadline, "waiters did not start");
+                thread::yield_now();
+            }
+            if destroy {
+                ds_scan_destroy(id);
+            } else {
+                ds_scan_cancel(id);
+            }
+            for _ in 0..3 {
+                assert_eq!(rx.recv_timeout(Duration::from_secs(2)).unwrap(), 2);
+            }
+            for handle in handles {
+                handle.join().unwrap();
+            }
+            ds_scan_destroy(id);
+            assert_eq!(Arc::strong_count(&state), 1);
+        }
+    }
+
+    #[test]
+    fn direct_json_escaping_preserves_all_controls_and_unicode() {
+        let mut out = String::from("prefix:");
+        append_quoted(&mut out, "日本語😀\"\\\r\n\t");
+        assert_eq!(out, "prefix:\"日本語😀\\\"\\\\\\r\\n\\t\"");
+        for byte in 0u8..32 {
+            let expected = match byte {
+                b'\n' => "\\n".into(),
+                b'\r' => "\\r".into(),
+                b'\t' => "\\t".into(),
+                _ => format!("\\u{byte:04x}"),
+            };
+            assert_eq!(
+                quote(&(byte as char).to_string()),
+                format!("\"{expected}\"")
+            );
+        }
+    }
+
     #[test]
     fn metadata_batches_preserve_totals_and_nested_directories() {
         for count in [511, 512, 513, 1024, 1300] {

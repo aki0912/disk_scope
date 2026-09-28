@@ -5,7 +5,7 @@ import Foundation
 let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().path
 let package = Package(
     name: "DiskScope",
-    platforms: [.macOS(.v14)],
+    platforms: [.macOS("26.0")],
     products: [.executable(name: "DiskScope", targets: ["DiskScope"])],
     targets: [
         .systemLibrary(name: "CScanner"),

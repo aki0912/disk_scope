@@ -28,7 +28,7 @@ with tempfile.TemporaryDirectory(prefix='diskscope-model-') as temporary:
         copied.append(str(target))
     subprocess.run(['cargo', 'build', '--release', '--manifest-path', 'rust/Cargo.toml'], cwd=ROOT, check=True)
     subprocess.run(['swiftc', '-O', '-parse-as-library', '-swift-version', '5',
-                    '-target', f'{platform.machine()}-apple-macosx14.0', '-module-cache-path', str(work / 'module-cache'),
+                    '-target', f'{platform.machine()}-apple-macosx26.0', '-module-cache-path', str(work / 'module-cache'),
                     '-I', 'Sources/CScanner', '-L', 'rust/target/release', '-ldiskscope_scanner',
                     *copied, '-o', str(work / 'ModelHarness')], cwd=ROOT, check=True)
     subprocess.run([str(work / 'ModelHarness'), str(fixture)], cwd=ROOT, check=True, timeout=30)

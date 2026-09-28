@@ -2,15 +2,27 @@
 
 SwiftUIとRustで作った、macOS向けのストレージ可視化アプリです。フォルダやSSDを選択すると、容量の割合を長方形の面積で表示します。
 
-## 起動
+## ダウンロード・インストール
 
-XcodeのSwiftツールチェーン、Rust/Cargoが必要です。外部パッケージには依存しません。ソースの対象はmacOS 14以降ですが、今回生成したアプリの動作確認はmacOS 27 / Apple Siliconで行っています。この環境のHomebrew版Rust標準ライブラリはmacOS 27向けのため、以前のmacOS用に配布する場合は、そのOSに対応したRustツールチェーンで再ビルドしてください。
+[DiskScope 0.1.0（DMG）をダウンロード](https://github.com/aki0912/disk_scope/releases/download/v0.1.0/DiskScope-0.1.0-arm64.dmg)
+
+Apple Silicon搭載Mac、macOS 26以降を対象にしたプレビュー版です。macOS 27で動作確認済みで、macOS 26での実機検証は未完了です。Developer ID署名とAppleの公証を済ませています。
+
+1. ダウンロードしたDMGを開きます。
+2. DiskScopeをApplicationsにドラッグします。
+3. DMGを取り出し、アプリケーションフォルダからDiskScopeを開きます。
+
+利用するだけならXcodeやRustは不要です。[リリースページ](https://github.com/aki0912/disk_scope/releases/tag/v0.1.0)には変更内容とSHA-256ファイルを掲載しています。
+
+## ソースからビルド・起動
+
+XcodeのSwiftツールチェーンと、rustupでインストールしたstable版Rust/Cargoが必要です。外部パッケージには依存しません。Apple Silicon / macOS 26以降を対象にビルドします。動作確認済みの環境はmacOS 27 / Apple Siliconで、macOS 26での実機検証は未完了です。ビルド・テスト用スクリプトはrustup版Rustを選択し、最低対応OSを26.0に設定します。
 
 ```sh
 ./scripts/run.sh
 ```
 
-ビルド済みアプリは `build/DiskScope.app` です。Finderから起動でき、必要に応じてアプリケーションフォルダへコピーできます。このビルドはローカル用のアドホック署名です。他のMacへ配布するためのDeveloper ID署名・公証は含みません。
+ビルド済みアプリは `build/DiskScope.app` です。Finderから起動でき、必要に応じてアプリケーションフォルダへコピーできます。この通常ビルドはローカル用のアドホック署名です。配布用の署名・公証済みDMGは、以下のリリース手順で作成します。
 
 ## 使い方
 
@@ -72,3 +84,25 @@ python3 scripts/verify_treemap_rendering.py
 ## 性能の測定
 
 大きいフォルダは512件単位でメタデータ取得を並列化し、画面に表示する上位項目だけを選出します。スキャン開始から初回の地図表示までの時間も測定しています。改善前後の実測値、測定条件、再測定の手順は [性能測定](docs/PERFORMANCE.md) を参照してください。
+
+## 配布用DMGの作成
+
+Apple Silicon搭載Mac、Developer ID Application証明書と秘密鍵、公証用のキーチェーンプロファイルが必要です。証明書はXcodeのアカウント設定から作成します。公証用の認証情報は、次のコマンドで対話形式で保存できます。
+
+```sh
+xcrun notarytool store-credentials "DiskScope-notary"
+```
+
+配布前にテストを実行し、署名に使う証明書のSHA-1を確認します。同じ名前の証明書が複数ある場合も、SHA-1で指定できます。
+
+```sh
+./scripts/test.sh
+security find-identity -v -p codesigning
+SIGNING_IDENTITY="証明書のSHA-1" ./scripts/release.sh
+```
+
+リリーススクリプトは、アプリのビルド・署名・公証と公証チケットの添付、DMG作成・署名・公証を順に行います。公証にはインターネット接続とAppleの処理待ち時間が必要です。別の認証プロファイルを使う場合は、`NOTARY_PROFILE`も指定してください。
+
+出力先は毎回新しく作る`build/releases/release.XXXXXX/`です。配布するファイルは`DiskScope-0.1.0-arm64.dmg`で、同じ場所にSHA-256ファイルと公証結果も保存します。DMGにはアプリ、Applicationsへのショートカット、インストール説明が入ります。検証用ZIPとstagingフォルダは配布不要です。
+
+macOS 26の別のMacでは、ダウンロードしたDMGを使い、アプリケーションフォルダへのコピー、初回起動、フォルダや外部SSDの解析、アクセス許可を確認してください。公証はOSの互換性を保証しません。バージョンを更新する際は`Info.plist`と`docs/INSTALL-ja.txt`を更新します。

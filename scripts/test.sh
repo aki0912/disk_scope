@@ -1,6 +1,7 @@
 #!/bin/zsh
 set -euo pipefail
 cd "${0:A:h}/.."
+source scripts/build-env.sh
 cargo fmt --check --manifest-path rust/Cargo.toml
 cargo clippy --manifest-path rust/Cargo.toml --all-targets -- -D warnings
 cargo test --manifest-path rust/Cargo.toml

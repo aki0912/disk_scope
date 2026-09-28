@@ -43,7 +43,7 @@ with tempfile.TemporaryDirectory(prefix='diskscope-search-') as temporary:
             copied.append(str(target))
         binaries[version] = destination / 'SearchBenchmark'
         checked(['swiftc', '-O', '-parse-as-library', '-swift-version', '5',
-                 '-target', f'{platform.machine()}-apple-macosx14.0', '-module-cache-path', str(work / 'module-cache'),
+                 '-target', f'{platform.machine()}-apple-macosx26.0', '-module-cache-path', str(work / 'module-cache'),
                  '-I', str(ROOT / 'Sources/CScanner'), '-L', str(ROOT / 'rust/target/release'), '-ldiskscope_scanner',
                  *copied, str(ROOT / 'Benchmarks/Search.swift'), '-o', str(binaries[version])])
     for count in [10000, 50000]:

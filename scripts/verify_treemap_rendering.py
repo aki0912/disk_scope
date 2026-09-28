@@ -46,7 +46,7 @@ with tempfile.TemporaryDirectory(prefix="diskscope-rendering-") as temporary:
     subprocess.run(["cargo", "build", "--release", "--manifest-path", "rust/Cargo.toml"], cwd=ROOT, check=True)
     command = [
         "swiftc", "-parse-as-library", "-swift-version", "5",
-        "-target", f"{platform.machine()}-apple-macosx14.0",
+        "-target", f"{platform.machine()}-apple-macosx26.0",
         "-module-cache-path", str(work / "module-cache"),
         "-I", "Sources/CScanner", "-L", "rust/target/release", "-ldiskscope_scanner",
         *copied, "-o", str(work / "RenderHarness"),

@@ -1,6 +1,7 @@
 #!/bin/zsh
 set -euo pipefail
 cd "${0:A:h}/.."
+source scripts/build-env.sh
 cargo build --release --manifest-path rust/Cargo.toml
 swift build -c release
 bin_dir="$(swift build -c release --show-bin-path)"

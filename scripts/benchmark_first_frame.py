@@ -74,7 +74,7 @@ def compile_version(source, destination):
         copied.append(str(target))
     executable = destination / 'FirstFrame'
     checked(['swiftc', '-O', '-parse-as-library', '-swift-version', '5',
-             '-target', f'{platform.machine()}-apple-macosx14.0',
+             '-target', f'{platform.machine()}-apple-macosx26.0',
              '-module-cache-path', str(destination / 'module-cache'),
              '-I', str(source / 'Sources/CScanner'), '-L', str(destination / 'rust/target/release'),
              '-ldiskscope_scanner', *copied, str(ROOT / 'Benchmarks/FirstFrame.swift'), '-o', str(executable)])

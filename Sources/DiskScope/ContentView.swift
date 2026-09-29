@@ -43,12 +43,12 @@ struct ContentView: View {
             if !model.recentRoots.isEmpty {
                 Text("最近解析した場所").font(.system(size: 10, weight: .medium)).foregroundStyle(Theme.muted).padding(.top, 27).padding(.bottom, 13)
                 ForEach(model.recentRoots, id: \.self) { path in
-                    Button { model.chooseFolder(at: URL(fileURLWithPath: path)) } label: {
+                    Button { model.start(URL(fileURLWithPath: path)) } label: {
                         HStack(spacing: 9) {
                             Image(systemName: "folder").foregroundStyle(Theme.muted)
                             Text(URL(fileURLWithPath: path).lastPathComponent.isEmpty ? "/" : URL(fileURLWithPath: path).lastPathComponent).lineLimit(1)
                         }.font(.system(size: 11)).padding(.vertical, 7)
-                    }.buttonStyle(.plain).disabled(model.scanning).help("場所を確認して解析")
+                    }.buttonStyle(.plain).disabled(model.scanning).help("このフォルダを解析")
                 }
             }
             Spacer()

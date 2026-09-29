@@ -4,7 +4,7 @@ SwiftUIとRustで作った、macOS向けのストレージ可視化アプリで�
 
 ## ダウンロード・インストール
 
-[DiskScope 0.1.0（DMG）をダウンロード](https://github.com/aki0912/disk_scope/releases/download/v0.1.0/DiskScope-0.1.0-arm64.dmg)
+[リリース一覧からDMGをダウンロード](https://github.com/aki0912/disk_scope/releases)
 
 Apple Silicon搭載Mac、macOS 26以降を対象にしたプレビュー版です。macOS 27で動作確認済みで、macOS 26での実機検証は未完了です。Developer ID署名とAppleの公証を済ませています。
 
@@ -84,6 +84,10 @@ python3 scripts/verify_treemap_rendering.py
 ## 性能の測定
 
 大きいフォルダは512件単位でメタデータ取得を並列化し、画面に表示する上位項目だけを選出します。スキャン開始から初回の地図表示までの時間も測定しています。改善前後の実測値、測定条件、再測定の手順は [性能測定](docs/PERFORMANCE.md) を参照してください。
+
+## PRのマージ後の自動リリース
+
+初回にGitHub Actionsの認証情報を登録すると、`main`へのマージ後に署名・公証済みDMGとSHA-256ファイルを自動作成し、プレビュー版として公開します。設定と再実行の方法は[自動リリースの手順](docs/AUTOMATED-RELEASES.md)を参照してください。公開リポジトリの無料の標準macOSランナーを使用し、非公開になった場合は実行を停止します。
 
 ## 配布用DMGの作成
 

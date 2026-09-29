@@ -28,7 +28,7 @@ struct ContentView: View {
             HStack(spacing: 10) {
                 Image(systemName: "square.stack.3d.up.fill").font(.system(size: 24)).foregroundStyle(Theme.accent)
                 Text("DiskScope").font(.system(size: 22, weight: .semibold, design: .rounded))
-            }.padding(.top, 45).padding(.bottom, 30)
+            }.padding(.top, 18).padding(.bottom, 22)
             Button { model.navigate(0) } label: {
                 HStack(spacing: 10) {
                     Image(systemName: "square.grid.2x2.fill")
@@ -83,14 +83,14 @@ struct ContentView: View {
                 Button { if let url = model.rootURL { model.start(url) } } label: { Label("再解析", systemImage: "arrow.clockwise") }
                     .buttonStyle(QuietButtonStyle())
             }
-            Button(action: model.chooseFolder) { Label("フォルダを選択", systemImage: "plus") }
+            Button(action: model.chooseFolder) { Label("フォルダを選択", systemImage: "folder") }
                 .buttonStyle(PrimaryButtonStyle()).disabled(model.scanning)
-        }.padding(.horizontal, 28).padding(.top, 30).padding(.bottom, 22)
+        }.padding(.horizontal, 24).padding(.vertical, 12)
     }
 
     private func dashboard(_ snapshot: ScanSnapshot) -> some View {
-        VStack(spacing: 18) {
-            HStack(spacing: 14) {
+        VStack(spacing: 12) {
+            HStack(spacing: 12) {
                 statCard("解析した使用量", value: ByteText.format(snapshot.nodes[0].bytes(model.metric)), detail: model.metric.rawValue, icon: "externaldrive", accent: true)
                 statCard("ファイル", value: snapshot.payload.fileCount.formatted(), detail: "\(snapshot.payload.directoryCount.formatted()) フォルダを走査", icon: "doc.on.doc", accent: false)
                 statCard("解析時間", value: String(format: "%.2f 秒", snapshot.payload.elapsed), detail: "走査・集計", icon: "bolt", accent: false)
@@ -131,19 +131,20 @@ struct ContentView: View {
                 inspector.frame(width: 224)
             }.frame(minHeight: 200)
             fileList.frame(height: 210)
-        }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
+        }.padding(.horizontal, 24).padding(.vertical, 16).frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func statCard(_ title: String, value: String, detail: String, icon: String, accent: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(title).font(.system(size: 11)).foregroundStyle(Theme.muted)
-                Spacer()
-                Image(systemName: icon).font(.system(size: 14)).foregroundStyle(accent ? Theme.accent : Theme.muted)
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Label(title, systemImage: icon).font(.system(size: 11)).foregroundStyle(Theme.muted)
+                Text(detail).font(.system(size: 10)).foregroundStyle(Theme.muted)
+                    .lineLimit(1).minimumScaleFactor(0.8)
             }
-            Text(value).font(.system(size: 28, weight: .medium, design: .rounded)).foregroundStyle(accent ? Theme.accent : .white).lineLimit(1).minimumScaleFactor(0.7)
-            Text(detail).font(.system(size: 10)).foregroundStyle(Theme.muted)
-        }.padding(17).frame(maxWidth: .infinity, alignment: .leading)
+            Spacer(minLength: 0)
+            Text(value).font(.system(size: 23, weight: .medium, design: .rounded)).foregroundStyle(accent ? Theme.accent : .white)
+                .lineLimit(1).minimumScaleFactor(0.6).layoutPriority(1)
+        }.padding(.horizontal, 16).padding(.vertical, 14).frame(maxWidth: .infinity, alignment: .leading)
             .background(Theme.panel, in: RoundedRectangle(cornerRadius: 10))
             .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Theme.line))
     }
@@ -151,7 +152,7 @@ struct ContentView: View {
     private var mapHeader: some View {
         VStack(alignment: .leading, spacing: 11) {
             HStack {
-                Text("容量の地図").font(.system(size: 13, weight: .semibold))
+                Text("容量の内訳").font(.system(size: 13, weight: .semibold))
                 Spacer()
                 Picker("集計方法", selection: $model.metric) {
                     ForEach(SizeMetric.allCases, id: \.self) { Text($0.rawValue).tag($0) }

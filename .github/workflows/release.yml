@@ -1,0 +1,93 @@
+name: Build signed DMG
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # Standard hosted runners are free only while this repository is public.
+    if: >-
+      github.repository == 'aki0912/disk_scope' &&
+      github.event.repository.private == false &&
+      github.ref == 'refs/heads/main'
+    runs-on: macos-26
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: zsh -euo pipefail {0}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+
+      - name: Prepare release version
+        id: version
+        run: python3 scripts/ci_release_version.py
+
+      - name: Install Rust toolchain
+        run: rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+
+      - name: Run tests
+        run: ./scripts/test.sh
+
+      - name: Check signing configuration
+        env:
+          SIGNING_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
+          SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
+          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        run: |
+          for name in SIGNING_CERTIFICATE_BASE64 SIGNING_CERTIFICATE_PASSWORD SIGNING_IDENTITY APPLE_ID APPLE_TEAM_ID APPLE_APP_PASSWORD; do
+            if [[ -z "${(P)name}" ]]; then
+              echo "::error::Missing repository secret: $name"
+              exit 1
+            fi
+          done
+
+      - name: Install signing credentials in a temporary keychain
+        env:
+          SIGNING_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
+          SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        run: ./scripts/ci_signing.sh
+
+      - name: Build, sign, and notarize DMG
+        id: package
+        env:
+          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
+          NOTARY_PROFILE: DiskScope-ci
+          NOTARY_KEYCHAIN: ${{ runner.temp }}/diskscope-signing.keychain-db
+          RELEASE_BUILD_NUMBER: ${{ steps.version.outputs.build_number }}
+          RELEASE_ASSET_VERSION: ${{ steps.version.outputs.asset_version }}
+        run: ./scripts/release.sh
+
+      - name: Publish preview release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          RELEASE_DMG: ${{ steps.package.outputs.dmg }}
+          RELEASE_SHA256: ${{ steps.package.outputs.sha256 }}
+        run: python3 scripts/ci_publish_release.py
+
+      - name: Remove temporary signing credentials
+        if: always()
+        run: |
+          keychain="$RUNNER_TEMP/diskscope-signing.keychain-db"
+          if [[ -f "$keychain" ]]; then security delete-keychain "$keychain"; fi
+          rm -f "$RUNNER_TEMP/diskscope-signing.p12"

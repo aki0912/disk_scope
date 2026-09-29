@@ -28,7 +28,7 @@ struct ContentView: View {
             HStack(spacing: 10) {
                 Image(systemName: "square.stack.3d.up.fill").font(.system(size: 24)).foregroundStyle(Theme.accent)
                 Text("DiskScope").font(.system(size: 22, weight: .semibold, design: .rounded))
-            }.padding(.top, 45).padding(.bottom, 30)
+            }.padding(.top, 18).padding(.bottom, 22)
             Button { model.navigate(0) } label: {
                 HStack(spacing: 10) {
                     Image(systemName: "square.grid.2x2.fill")
@@ -38,7 +38,7 @@ struct ContentView: View {
                 }.font(.system(size: 12, weight: .medium)).padding(11)
                     .foregroundStyle(Theme.accent).background(Theme.accent.opacity(0.09), in: RoundedRectangle(cornerRadius: 7))
             }.buttonStyle(.plain).padding(.horizontal, -8)
-            Button(action: model.chooseFolder) { Label("フォルダ・SSDを選択", systemImage: "folder.badge.plus").font(.system(size: 12)).padding(.vertical, 13) }
+            Button(action: model.chooseFolder) { Label("フォルダ・SSDを選択", systemImage: "folder").font(.system(size: 12)).padding(.vertical, 13) }
                 .buttonStyle(.plain).foregroundStyle(.white.opacity(0.7))
             if !model.recentRoots.isEmpty {
                 Text("最近解析した場所").font(.system(size: 10, weight: .medium)).foregroundStyle(Theme.muted).padding(.top, 27).padding(.bottom, 13)
@@ -83,17 +83,21 @@ struct ContentView: View {
                 Button { if let url = model.rootURL { model.start(url) } } label: { Label("再解析", systemImage: "arrow.clockwise") }
                     .buttonStyle(QuietButtonStyle())
             }
-            Button(action: model.chooseFolder) { Label("フォルダを選択", systemImage: "plus") }
+            Button(action: model.chooseFolder) { Label("フォルダを選択", systemImage: "folder") }
                 .buttonStyle(PrimaryButtonStyle()).disabled(model.scanning)
-        }.padding(.horizontal, 28).padding(.top, 30).padding(.bottom, 22)
+        }.padding(.horizontal, 24).padding(.vertical, 12)
     }
 
     private func dashboard(_ snapshot: ScanSnapshot) -> some View {
-        VStack(spacing: 18) {
-            HStack(spacing: 14) {
-                statCard("解析した使用量", value: ByteText.format(snapshot.nodes[0].bytes(model.metric)), detail: model.metric.rawValue, icon: "externaldrive", accent: true)
-                statCard("ファイル", value: snapshot.payload.fileCount.formatted(), detail: "\(snapshot.payload.directoryCount.formatted()) フォルダを走査", icon: "doc.on.doc", accent: false)
-                statCard("解析時間", value: String(format: "%.2f 秒", snapshot.payload.elapsed), detail: "走査・集計", icon: "bolt", accent: false)
+        VStack(spacing: 12) {
+            VStack(alignment: .trailing, spacing: 6) {
+                HStack(spacing: 12) {
+                    statCard("このフォルダの使用量", value: ByteText.format(model.current?.bytes(model.metric) ?? 0), detail: model.metric.rawValue, icon: "externaldrive", accent: true)
+                    statCard("含まれるファイル", value: snapshot.descendantFiles[model.currentID].formatted(), detail: "サブフォルダ内も含む", icon: "doc.on.doc", accent: false)
+                }
+                Label("全体の解析時間 \(elapsedText(snapshot.payload.elapsed))", systemImage: "clock")
+                    .font(.system(size: 10)).monospacedDigit().foregroundStyle(Theme.muted)
+                    .help("解析対象全体の走査・集計にかかった時間")
             }
             if snapshot.payload.issueCount > 0 {
                 HStack {
@@ -131,19 +135,24 @@ struct ContentView: View {
                 inspector.frame(width: 224)
             }.frame(minHeight: 200)
             fileList.frame(height: 210)
-        }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
+        }.padding(.horizontal, 24).padding(.vertical, 16).frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func elapsedText(_ seconds: Double) -> String {
+        seconds < 0.01 ? "0.01秒未満" : String(format: "%.2f秒", seconds)
     }
 
     private func statCard(_ title: String, value: String, detail: String, icon: String, accent: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(title).font(.system(size: 11)).foregroundStyle(Theme.muted)
-                Spacer()
-                Image(systemName: icon).font(.system(size: 14)).foregroundStyle(accent ? Theme.accent : Theme.muted)
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Label(title, systemImage: icon).font(.system(size: 11)).foregroundStyle(Theme.muted)
+                Text(detail).font(.system(size: 10)).foregroundStyle(Theme.muted)
+                    .lineLimit(1).minimumScaleFactor(0.8)
             }
-            Text(value).font(.system(size: 28, weight: .medium, design: .rounded)).foregroundStyle(accent ? Theme.accent : .white).lineLimit(1).minimumScaleFactor(0.7)
-            Text(detail).font(.system(size: 10)).foregroundStyle(Theme.muted)
-        }.padding(17).frame(maxWidth: .infinity, alignment: .leading)
+            Spacer(minLength: 0)
+            Text(value).font(.system(size: 23, weight: .medium, design: .rounded)).foregroundStyle(accent ? Theme.accent : .white)
+                .lineLimit(1).minimumScaleFactor(0.6).layoutPriority(1)
+        }.padding(.horizontal, 16).padding(.vertical, 14).frame(maxWidth: .infinity, alignment: .leading)
             .background(Theme.panel, in: RoundedRectangle(cornerRadius: 10))
             .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Theme.line))
     }
@@ -151,7 +160,7 @@ struct ContentView: View {
     private var mapHeader: some View {
         VStack(alignment: .leading, spacing: 11) {
             HStack {
-                Text("容量の地図").font(.system(size: 13, weight: .semibold))
+                Text("容量の内訳").font(.system(size: 13, weight: .semibold))
                 Spacer()
                 Picker("集計方法", selection: $model.metric) {
                     ForEach(SizeMetric.allCases, id: \.self) { Text($0.rawValue).tag($0) }
@@ -330,7 +339,7 @@ struct ContentView: View {
             Spacer()
             if let snapshot = model.snapshot {
                 Button { showIssues = true } label: {
-                    Text("対象外 \(snapshot.payload.excludedCount) · 重複 \(snapshot.payload.duplicateCount) · 集計について")
+                    Text("対象外 \(snapshot.payload.excludedCount) · 重複 \(snapshot.payload.duplicateCount) · 集計方法と注意点")
                 }.buttonStyle(.plain)
             }
         }.font(.system(size: 9)).foregroundStyle(Theme.muted).padding(.horizontal, 25).padding(.vertical, 12)
@@ -340,9 +349,13 @@ struct ContentView: View {
     private var issuesSheet: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text("集計について").font(.title2.bold())
+                Text("集計方法と注意点").font(.title2.bold())
                 Spacer()
                 Button("閉じる") { showIssues = false }.keyboardShortcut(.cancelAction)
+            }
+            if let snapshot = model.snapshot {
+                Text("解析全体の所要時間：\(elapsedText(snapshot.payload.elapsed))（走査・集計）")
+                    .foregroundStyle(Theme.muted)
             }
             Text("「ディスク上の使用量」は各ファイルの割り当て済みブロック数から計算します。「ファイルサイズ」は論理サイズです。1 KB = 1,000 B で表示しています。")
             Text("APFSのクローン・スナップショット・圧縮・共有領域などにより、合計はSSD全体の実使用量や削除で空く容量とは一致しません。フォルダ自体の管理領域は含みません。")

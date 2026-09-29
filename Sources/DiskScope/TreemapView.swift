@@ -43,9 +43,17 @@ struct TreemapView: View {
                     var clipped = context
                     clipped.clip(to: Path(rect.insetBy(dx: 8, dy: 3)))
                     let fontSize: CGFloat = tile.depth == 0 ? 12 : 10
-                    let capacity = max(4, Int((rect.width - 20) / (fontSize * 0.65)))
-                    let title = tile.title.count > capacity ? String(tile.title.prefix(capacity - 1)) + "…" : tile.title
-                    clipped.draw(Text(title).font(.system(size: fontSize, weight: .medium)).foregroundColor(.white.opacity(0.95)), at: CGPoint(x: rect.minX + 10, y: rect.minY + 9), anchor: .topLeading)
+                    var titleWidth = rect.width - 20
+                    if tile.hasChildren {
+                        let total = context.resolve(Text(ByteText.format(tile.bytes))
+                            .font(.system(size: 10, weight: .medium, design: .rounded)).foregroundColor(.white.opacity(0.85)))
+                        let totalWidth = total.measure(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)).width
+                        titleWidth -= totalWidth + 10
+                        clipped.draw(total, at: CGPoint(x: rect.maxX - 10, y: rect.minY + 10), anchor: .topTrailing)
+                    }
+                    let title = fittedText(tile.title, font: .system(size: fontSize, weight: .medium),
+                                           width: titleWidth, context: context)
+                    clipped.draw(title, at: CGPoint(x: rect.minX + 10, y: rect.minY + 9), anchor: .topLeading)
                     if !tile.hasChildren && rect.height > 53 {
                         clipped.draw(Text(ByteText.format(tile.bytes)).font(.system(size: rect.width > 180 && rect.height > 100 ? 22 : 12, weight: .semibold, design: .rounded)).foregroundColor(.white), at: CGPoint(x: rect.minX + 10, y: rect.minY + 29), anchor: .topLeading)
                         if rect.height > 92 {
@@ -58,7 +66,7 @@ struct TreemapView: View {
                 if let hovered, tiles.indices.contains(hovered) {
                     let tile = tiles[hovered]
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(tile.title).font(.system(size: 11, weight: .semibold)).lineLimit(2)
+                        Text(tile.title).font(.system(size: 11, weight: .semibold)).fixedSize(horizontal: false, vertical: true)
                         Text("\(ByteText.format(tile.bytes)) · \(ByteText.percent(tile.bytes, of: totalBytes))")
                             .font(.system(size: 10, design: .monospaced)).foregroundStyle(Theme.muted)
                     }
@@ -94,6 +102,27 @@ struct TreemapView: View {
             }
             .accessibilityLabel("容量ツリーマップ。各項目の詳細とフォルダ移動は下の一覧から操作できます。")
         }
+    }
+
+    private func fittedText(_ value: String, font: Font, width: CGFloat, context: GraphicsContext) -> GraphicsContext.ResolvedText {
+        func resolve(_ text: String) -> GraphicsContext.ResolvedText {
+            context.resolve(Text(text).font(font).foregroundColor(.white.opacity(0.95)))
+        }
+        func fits(_ text: GraphicsContext.ResolvedText) -> Bool {
+            text.measure(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)).width <= width
+        }
+        let full = resolve(value)
+        if fits(full) { return full }
+        guard fits(resolve("…")) else { return resolve("") }
+        let characters = Array(value)
+        var lower = 0
+        var upper = characters.count
+        while lower < upper {
+            let middle = (lower + upper + 1) / 2
+            if fits(resolve(String(characters.prefix(middle)) + "…")) { lower = middle }
+            else { upper = middle - 1 }
+        }
+        return resolve(String(characters.prefix(lower)) + "…")
     }
 
     private func makeTiles(in bounds: CGRect) -> [RenderTile] {

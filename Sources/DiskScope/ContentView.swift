@@ -38,7 +38,7 @@ struct ContentView: View {
                 }.font(.system(size: 12, weight: .medium)).padding(11)
                     .foregroundStyle(Theme.accent).background(Theme.accent.opacity(0.09), in: RoundedRectangle(cornerRadius: 7))
             }.buttonStyle(.plain).padding(.horizontal, -8)
-            Button(action: model.chooseFolder) { Label("フォルダ・SSDを選択", systemImage: "folder.badge.plus").font(.system(size: 12)).padding(.vertical, 13) }
+            Button(action: model.chooseFolder) { Label("フォルダ・SSDを選択", systemImage: "folder").font(.system(size: 12)).padding(.vertical, 13) }
                 .buttonStyle(.plain).foregroundStyle(.white.opacity(0.7))
             if !model.recentRoots.isEmpty {
                 Text("最近解析した場所").font(.system(size: 10, weight: .medium)).foregroundStyle(Theme.muted).padding(.top, 27).padding(.bottom, 13)
@@ -90,10 +90,14 @@ struct ContentView: View {
 
     private func dashboard(_ snapshot: ScanSnapshot) -> some View {
         VStack(spacing: 12) {
-            HStack(spacing: 12) {
-                statCard("解析した使用量", value: ByteText.format(snapshot.nodes[0].bytes(model.metric)), detail: model.metric.rawValue, icon: "externaldrive", accent: true)
-                statCard("ファイル", value: snapshot.payload.fileCount.formatted(), detail: "\(snapshot.payload.directoryCount.formatted()) フォルダを走査", icon: "doc.on.doc", accent: false)
-                statCard("解析時間", value: String(format: "%.2f 秒", snapshot.payload.elapsed), detail: "走査・集計", icon: "bolt", accent: false)
+            VStack(alignment: .trailing, spacing: 6) {
+                HStack(spacing: 12) {
+                    statCard("このフォルダの使用量", value: ByteText.format(model.current?.bytes(model.metric) ?? 0), detail: model.metric.rawValue, icon: "externaldrive", accent: true)
+                    statCard("含まれるファイル", value: snapshot.descendantFiles[model.currentID].formatted(), detail: "サブフォルダ内も含む", icon: "doc.on.doc", accent: false)
+                }
+                Label("全体の解析時間 \(elapsedText(snapshot.payload.elapsed))", systemImage: "clock")
+                    .font(.system(size: 10)).monospacedDigit().foregroundStyle(Theme.muted)
+                    .help("解析対象全体の走査・集計にかかった時間")
             }
             if snapshot.payload.issueCount > 0 {
                 HStack {
@@ -132,6 +136,10 @@ struct ContentView: View {
             }.frame(minHeight: 200)
             fileList.frame(height: 210)
         }.padding(.horizontal, 24).padding(.vertical, 16).frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func elapsedText(_ seconds: Double) -> String {
+        seconds < 0.01 ? "0.01秒未満" : String(format: "%.2f秒", seconds)
     }
 
     private func statCard(_ title: String, value: String, detail: String, icon: String, accent: Bool) -> some View {
@@ -331,7 +339,7 @@ struct ContentView: View {
             Spacer()
             if let snapshot = model.snapshot {
                 Button { showIssues = true } label: {
-                    Text("対象外 \(snapshot.payload.excludedCount) · 重複 \(snapshot.payload.duplicateCount) · 集計について")
+                    Text("対象外 \(snapshot.payload.excludedCount) · 重複 \(snapshot.payload.duplicateCount) · 集計方法と注意点")
                 }.buttonStyle(.plain)
             }
         }.font(.system(size: 9)).foregroundStyle(Theme.muted).padding(.horizontal, 25).padding(.vertical, 12)
@@ -341,9 +349,13 @@ struct ContentView: View {
     private var issuesSheet: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text("集計について").font(.title2.bold())
+                Text("集計方法と注意点").font(.title2.bold())
                 Spacer()
                 Button("閉じる") { showIssues = false }.keyboardShortcut(.cancelAction)
+            }
+            if let snapshot = model.snapshot {
+                Text("解析全体の所要時間：\(elapsedText(snapshot.payload.elapsed))（走査・集計）")
+                    .foregroundStyle(Theme.muted)
             }
             Text("「ディスク上の使用量」は各ファイルの割り当て済みブロック数から計算します。「ファイルサイズ」は論理サイズです。1 KB = 1,000 B で表示しています。")
             Text("APFSのクローン・スナップショット・圧縮・共有領域などにより、合計はSSD全体の実使用量や削除で空く容量とは一致しません。フォルダ自体の管理領域は含みません。")
